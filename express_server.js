@@ -27,9 +27,26 @@ app.get("/urls", (request, response) => {
   response.render("urls_index", templateVars); 
 });
 
+// ----------------------------------------------------------------------------------------------------
+// example route handlers
+
 app.get("/hello", (request, response) => {
   response.send("<html><body>Hello <b>World</b></body></html>\n");
 });
+
+app.get("/helloworld", (request, response) => {
+  const templateVars = { greeting: 'Hello World!' };
+  response.render("hello_world", templateVars);
+});
+
+// the templateVars object above contains the string 'Hello World' under the key greeting. 
+// We then pass the templateVars object to the template called hello_world.
+
+// In our hello_world.ejs file, we can display the 'Hello World!' string stored in the templateVars object by calling the key greeting:
+
+// <!-- This would display the string "Hello World!" -->
+// <h1><%= greeting %></h1>
+// ----------------------------------------------------------------------------------------------------
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
