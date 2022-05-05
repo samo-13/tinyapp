@@ -18,7 +18,7 @@ app.get("/", (request, response) => { // '/' refers to http://localhost:8080/
 });
 
 app.get("/urls.json", (request, response) => {
-  response.json(urlDatabase);
+  response.json(urlDatabase[shortURL]);
 });
 
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable. 
@@ -26,6 +26,19 @@ app.get("/urls.json", (request, response) => {
 app.get("/urls", (request, response) => {
   const templateVars = { urls: urlDatabase };
   response.render("urls_index", templateVars); 
+});
+
+app.get("/urls/:shortURL", (request, response) => { // The : in front of shortURL indicates that shortURL is a route parameter
+  // check longURL implementation
+  let shortURL = request.params.shortURL
+  console.log(urlDatabase.shortURL)
+  console.log(urlDatabase[shortURL])
+
+  const templateVars = { 
+    shortURL: shortURL, 
+    longURL: urlDatabase[shortURL]
+  }; // https://expressjs.com/en/guide/routing.html#route-parameters 
+  response.render("urls_show", templateVars);
 });
 
 // ----------------------------------------------------------------------------------------------------
