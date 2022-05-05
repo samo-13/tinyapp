@@ -29,9 +29,8 @@ app.get("/urls", (request, response) => {
 });
 
 app.get("/urls/:shortURL", (request, response) => { // The : in front of shortURL indicates that shortURL is a route parameter
-  // check longURL implementation
-  let shortURL = request.params.shortURL
-  console.log(urlDatabase.shortURL)
+  
+  let shortURL = request.params.shortURL // https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest.params?redirectedfrom=MSDN&view=netframework-4.8#System_Web_HttpRequest_Params
   console.log(urlDatabase[shortURL])
 
   const templateVars = { 
