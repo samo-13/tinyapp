@@ -21,7 +21,8 @@ app.get("/urls.json", (request, response) => {
   response.json(urlDatabase);
 });
 
-// When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable. This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
+// When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable. 
+// This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
   const templateVars = { urls: urlDatabase };
   response.render("urls_index", templateVars); 
