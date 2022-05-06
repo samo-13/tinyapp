@@ -77,6 +77,14 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   response.render("urls_show", templateVars);
 });
 
+
+app.get("/u/:shortURL", (request, response) => {
+  const shortURL = request.params.shortURL;
+  const longURL = urlDatabase[shortURL]
+
+  console.log('longURL:', longURL)
+  response.redirect(longURL);
+});
 // ----------------------------------------------------------------------------------------------------
 // example route handlers
 
