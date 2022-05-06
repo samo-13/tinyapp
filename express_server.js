@@ -17,6 +17,9 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+// ----------------------------------------------------------------------------------------------------
+// GET
+// ----------------------------------------------------------------------------------------------------
 
 // app.get(path, callback [, callback ...])
 // Routes HTTP GET requests to the specified path with the specified callback functions.
@@ -75,6 +78,15 @@ app.get("/helloworld", (request, response) => {
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}!`);
+});
+
+// ----------------------------------------------------------------------------------------------------
+// POST
+// ----------------------------------------------------------------------------------------------------
+
+app.post("/urls", (request, response) => {
+  console.log(request.body); // log the POST request body to the console
+  response.send("Ok"); // respond with 'Ok' temporarily
 });
 
 // development notes
