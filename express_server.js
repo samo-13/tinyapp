@@ -127,12 +127,21 @@ app.listen(PORT, () => {
 
 app.post("/login", (request, response) => {
   let username = request.body.username;
-  console.log('Hello'); // log the POST request body to the console
   console.log(username)
   response.cookie('username', username) // http://expressjs.com/en/api.html#res.cookie
   cookieParser.JSONCookie(username)
 
   response.redirect("/urls");
+});
+
+app.post("/logout", (request, response) => {
+  // let username = request.body.username;
+  // console.log(username)
+  // username = cookieParser.JSONCookie(username)
+  // let cookie = request.cookies["username"]
+  console.log(request.cookies["username"])
+  response.clearCookie('username', {domain: 'localhost', path:'/'});  // https://expressjs.com/en/api.html res.clearCookie
+  response.redirect("/urls")
 });
 
 app.post("/urls", (request, response) => {
