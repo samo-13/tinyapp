@@ -11,7 +11,8 @@ app.set("view engine", "ejs"); // set ejs as the view engine
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const request = require("request");
 app.use(cookieParser())
 
 // ----------------------------------------------------------------------------------------------------
@@ -22,6 +23,16 @@ const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+const templateVars = {
+  username: request.cookie["username"],
+  shortURL: request.params.shortURL,
+  longURL: urlDatabase[shortURL]
+};
+
+response.render("urls_index", templateVars);
+response.render("urls_new", templateVars);
+response.render("urls_show", templateVars);
 
 // ----------------------------------------------------------------------------------------------------
 // FUNCTIONS
@@ -119,7 +130,7 @@ app.post("/login", (request, response) => {
   let username = request.body.username;
   console.log('Hello'); // log the POST request body to the console
   console.log(username)
-  response.cookie('username', username)
+  response.cookie('username', username) // http://expressjs.com/en/api.html#res.cookie
   cookieParser.JSONCookie(username)
 
   response.redirect("/urls");
