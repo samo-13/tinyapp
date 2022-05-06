@@ -12,10 +12,31 @@ app.set("view engine", "ejs"); // set ejs as the view engine
 const bodyParser = require("body-parser"); 
 app.use(bodyParser.urlencoded({extended: true}));
 
+// ----------------------------------------------------------------------------------------------------
+// DATA
+// ----------------------------------------------------------------------------------------------------
+
 const urlDatabase = {
   "b2xVn2": "http://www.lighthouselabs.ca",
   "9sm5xK": "http://www.google.com"
 };
+
+// ----------------------------------------------------------------------------------------------------
+// FUNCTIONS
+// ----------------------------------------------------------------------------------------------------
+
+function generateRandomString() { // random string generator
+  const stringLength = 6;
+  let string = '';
+
+   while (string.length < stringLength) {
+    string += Math.random().toString(36).substring(2);
+    string = string.substring(0, stringLength);
+  }
+  console.log(string);
+  return string;
+};
+generateRandomString();
 
 // ----------------------------------------------------------------------------------------------------
 // GET
