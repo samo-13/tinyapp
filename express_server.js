@@ -112,10 +112,11 @@ app.post("/urls", (request, response) => {
   let longURL = request.body.longURL;
 
   console.log(request.body.longURL); // log the POST request body to the console
-  response.send(shortURL); // generates a random 6 character string
+
   
   urlDatabase[shortURL] = longURL; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
   console.log(urlDatabase);
+  response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
   return;
 });
 
