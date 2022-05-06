@@ -12,6 +12,9 @@ app.set("view engine", "ejs"); // set ejs as the view engine
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
+const cookieParser = require('cookie-parser')
+app.use(CookieParser())
+
 // ----------------------------------------------------------------------------------------------------
 // DATA
 // ----------------------------------------------------------------------------------------------------
@@ -112,6 +115,13 @@ app.listen(PORT, () => {
 // ----------------------------------------------------------------------------------------------------
 // POST
 // ----------------------------------------------------------------------------------------------------
+
+app.post("/login", (request, response) => {
+  let username = request.body.username;
+  console.log(username); // log the POST request body to the console
+
+
+});
 
 app.post("/urls", (request, response) => {
 
