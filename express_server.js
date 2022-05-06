@@ -5,7 +5,6 @@ const PORT = 8080; // default port 8080
 // tells the Express app to use EJS as its templating engine
 app.set("view engine", "ejs"); // set ejs as the view engine
 
-
 // When our browser submits a POST request, the data in the request body is sent as a Buffer. While this data type is great for transmitting data, it's not readable for us humans. To make this data readable, we will need to install another piece of middleware, body-parser.
 // The body-parser library will convert the request body from a Buffer into string that we can read.
 // It will then add the data to the req(request) object under the key body.
@@ -13,7 +12,7 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 const cookieParser = require('cookie-parser')
-app.use(CookieParser())
+app.use(cookieParser())
 
 // ----------------------------------------------------------------------------------------------------
 // DATA
@@ -116,11 +115,12 @@ app.listen(PORT, () => {
 // POST
 // ----------------------------------------------------------------------------------------------------
 
-app.post("/login", (request, response) => {
+app.post("/login/", (request, response) => {
   let username = request.body.username;
-  console.log(username); // log the POST request body to the console
-
-
+  console.log('Hello'); // log the POST request body to the console
+  console.log(username)
+  console.log('Cookies: ', request.cookies)
+  response.redirect("/urls");
 });
 
 app.post("/urls", (request, response) => {
