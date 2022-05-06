@@ -77,7 +77,7 @@ app.get("/urls", (request, response) => {
 app.get("/urls/new", (request, response) => {
   const templateVars = { 
     urls: urlDatabase,
-    username: request.cookies["username"],
+    username: request.cookies["username"]
    };
   response.render("urls_new", templateVars);
 });
@@ -90,6 +90,7 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   const templateVars = {
     shortURL: shortURL,
     longURL: urlDatabase[shortURL],
+    username: request.cookies["username"]
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
   response.render("urls_show", templateVars);
 });
