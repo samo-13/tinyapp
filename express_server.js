@@ -115,11 +115,13 @@ app.listen(PORT, () => {
 // POST
 // ----------------------------------------------------------------------------------------------------
 
-app.post("/login/", (request, response) => {
+app.post("/login", (request, response) => {
   let username = request.body.username;
   console.log('Hello'); // log the POST request body to the console
   console.log(username)
-  console.log('Cookies: ', request.cookies)
+  response.cookie('username', username)
+  cookieParser.JSONCookie(username)
+
   response.redirect("/urls");
 });
 
