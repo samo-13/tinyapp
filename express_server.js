@@ -67,3 +67,9 @@ app.listen(PORT, () => {
 
 // development notes
 // https://expressjs.com/en/4x/api.html#app.METHOD
+
+// HTTP Method	/ CRUD Action
+// --- GET	/ Read
+// --- POST / Create
+// --- PUT	/ Update
+// --- DELETE / Delete
