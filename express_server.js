@@ -67,6 +67,15 @@ app.get("/urls", (request, response) => {
   response.render("urls_index", templateVars);
 });
 
+app.get("/register", (request, response) => {
+  const templateVars = { 
+    urls: urlDatabase,
+    username: request.cookies["username"],
+   };
+
+  response.render("urls_register", templateVars);
+});
+
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
   const templateVars = { 
