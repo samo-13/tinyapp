@@ -77,12 +77,11 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   response.render("urls_show", templateVars);
 });
 
-
 app.get("/u/:shortURL", (request, response) => {
   const shortURL = request.params.shortURL;
-  const longURL = urlDatabase[shortURL]
+  const longURL = urlDatabase[shortURL];
 
-  console.log('longURL:', longURL)
+  console.log('longURL:', longURL);
   response.redirect(longURL);
 });
 // ----------------------------------------------------------------------------------------------------
@@ -121,7 +120,6 @@ app.post("/urls", (request, response) => {
 
   console.log(request.body.longURL); // log the POST request body to the console
 
-  
   urlDatabase[shortURL] = longURL; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
   console.log(urlDatabase);
   response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
@@ -136,7 +134,6 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 });
 
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
-
 
 // development notes
 // https://expressjs.com/en/4x/api.html#app.METHOD
