@@ -24,15 +24,11 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const templateVars = {
-  username: request.cookie["username"],
-  shortURL: request.params.shortURL,
-  longURL: urlDatabase[shortURL]
-};
-
-response.render("urls_index", templateVars);
-response.render("urls_new", templateVars);
-response.render("urls_show", templateVars);
+// const templateVars = {
+//   username: request.cookie["username"],
+//   // shortURL: request.params[shortURL,
+//   // longURL: urlDatabase[shortURL]
+// };
 
 // ----------------------------------------------------------------------------------------------------
 // FUNCTIONS
@@ -69,13 +65,21 @@ app.get("/urls.json", (request, response) => {
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable.
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { 
+    urls: urlDatabase,
+    username: request.cookies["username"],
+   };
+
   response.render("urls_index", templateVars);
 });
 
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
-  response.render("urls_new");
+  const templateVars = { 
+    urls: urlDatabase,
+    username: request.cookies["username"],
+   };
+  response.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (request, response) => { // The : in front of shortURL indicates that shortURL is a route parameter
@@ -85,7 +89,7 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
 
   const templateVars = {
     shortURL: shortURL,
-    longURL: urlDatabase[shortURL]
+    longURL: urlDatabase[shortURL],
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
   response.render("urls_show", templateVars);
 });
@@ -159,12 +163,11 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 app.post("/urls/:shortURL/edit", (request, response) => {
   const shortURL = request.params.shortURL;
   let editLongURL = request.body.editLongURL
-  console.log(editLongURL)
-  console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
+  // console.log(editLongURL)
+  // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
   urlDatabase[shortURL] = editLongURL; // replace old longURL with the new one submitted
-  console.log(urlDatabase)
+  // console.log(urlDatabase)
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
-  return;
 });
 
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
