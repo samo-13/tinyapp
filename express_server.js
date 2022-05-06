@@ -107,7 +107,7 @@ app.listen(PORT, () => {
 
 app.post("/urls", (request, response) => {
   console.log(request.body); // log the POST request body to the console
-  response.send("Ok"); // respond with 'Ok' temporarily
+  response.send(generateRandomString()); // respond with 'Ok' temporarily
 });
 
 // development notes
