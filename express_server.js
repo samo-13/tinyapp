@@ -130,11 +130,12 @@ app.post("/urls", (request, response) => {
 
 app.post("/urls/:shortURL/delete", (request, response) => {
   const shortURL = request.params.shortURL;
-  delete urlDatabase[shortURL];
-  response.redirect("/urls");
+  delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
+  response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
   return;
-}); 
+});
 
+// test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
 
 // development notes
