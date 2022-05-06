@@ -133,6 +133,17 @@ app.post("/urls/:shortURL/delete", (request, response) => {
   return;
 });
 
+app.post("/urls/:shortURL/edit", (request, response) => {
+  const shortURL = request.params.shortURL;
+  let editLongURL = request.body.editLongURL
+  console.log(editLongURL)
+  console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
+  urlDatabase[shortURL] = editLongURL; // replace old longURL with the new one submitted
+  console.log(urlDatabase)
+  response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
+  return;
+});
+
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
 // development notes
