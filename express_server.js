@@ -36,7 +36,8 @@ function generateRandomString() { // random string generator
   console.log(string);
   return string;
 };
-generateRandomString();
+
+// generateRandomString();
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -106,9 +107,20 @@ app.listen(PORT, () => {
 // ----------------------------------------------------------------------------------------------------
 
 app.post("/urls", (request, response) => {
-  console.log(request.body); // log the POST request body to the console
-  response.send(generateRandomString()); // respond with 'Ok' temporarily
+
+  let shortURL = generateRandomString()
+  // urlDatabase[longURL] = request.body.longURL
+  let longURL = request.body.longURL
+  console.log(request.body.longURL); // log the POST request body to the console
+  response.send(shortURL); // generates a random 6 character string
+  // console.log({shortURL: longURL})
+  urlDatabase[shortURL] = longURL
+  // return Object.assign({shortURL: longURL}, urlDatabase)
+  // console.log(urlDatabase);
+  console.log(urlDatabase);
 });
+
+
 
 // development notes
 // https://expressjs.com/en/4x/api.html#app.METHOD
