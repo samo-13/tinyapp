@@ -24,12 +24,6 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-// const templateVars = {
-//   username: request.cookie["username"],
-//   // shortURL: request.params[shortURL,
-//   // longURL: urlDatabase[shortURL]
-// };
-
 // ----------------------------------------------------------------------------------------------------
 // FUNCTIONS
 // ----------------------------------------------------------------------------------------------------
