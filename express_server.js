@@ -88,9 +88,9 @@ app.get("/u/:shortURL", (request, response) => {
 // ----------------------------------------------------------------------------------------------------
 // example route handlers
 
-app.get("/hello", (request, response) => {
-  response.send("<html><body>Hello <b>World</b></body></html>\n");
-});
+// app.get("/hello", (request, response) => {
+//   response.send("<html><body>Hello <b>World</b></body></html>\n");
+// });
 
 app.get("/helloworld", (request, response) => {
   const templateVars = { greeting: 'Hello World!' };
@@ -128,10 +128,18 @@ app.post("/urls", (request, response) => {
   return;
 });
 
+app.post("/urls/:shortURL/delete", (request, response) => {
+  const shortURL = request.params.shortURL;
+  delete urlDatabase[shortURL];
+  response.redirect("/urls");
+  return;
+}); 
+
 
 
 // development notes
 // https://expressjs.com/en/4x/api.html#app.METHOD
+// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
 
 // HTTP Method	/ CRUD Action
 // --- GET	/ Read
