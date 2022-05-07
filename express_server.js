@@ -72,22 +72,22 @@ let emailLookup = function(email) {
   return false;
 };
 
-console.log('user@example.com')
-emailLookup("user@example.com")
-console.log('user2@example.com')
-emailLookup("user2@example.com")
-console.log('sarah@example.com')
-emailLookup("sarah@example.com")
+console.log('user@example.com');
+emailLookup("user@example.com");
+console.log('user2@example.com');
+emailLookup("user2@example.com");
+console.log('sarah@example.com');
+emailLookup("sarah@example.com");
 
 let passwordChecker = function(password, user) {
   console.log('passwordChecker function');
   for (let user in users) {
     if (users[user].password === password) {
-      console.log('true')
+      console.log('true');
       return true;
     }
   }
-  console.log('false')
+  console.log('false');
   return false;
 };
 
@@ -96,41 +96,41 @@ let passwordCheckerV2 = function(password, email) {
   
   for (let user in users) {
     if ((emailLookup(email)) && (users[user].password === password)) {
-      console.log('true')
+      console.log('true');
       return true;
     }
   }
-  console.log('false')
+  console.log('false');
   return false;
 };
 
-console.log('SHOULD BE TRUE')
+console.log('SHOULD BE TRUE');
 passwordChecker('pmd', "userRandomID"); // returns true
-console.log('SHOULD BE FALSE')
+console.log('SHOULD BE FALSE');
 passwordChecker('pm', "userRandomID"); // returns false
-console.log('SHOULD BE TRUE')
+console.log('SHOULD BE TRUE');
 passwordCheckerV2('df', 'user2@example.com'); // returns true
-console.log('SHOULD BE FALSE')
+console.log('SHOULD BE FALSE');
 passwordCheckerV2('pm', "userRandomID"); // returns false
 
 
 let getUserID = function(email) {
-  console.log('getUserID')
+  console.log('getUserID');
 
   for (let user in users) {
     if (email === users[user].email) { // was unable to get emailChecker function to work here
-      console.log(users[user].id)
-      return users[user].id
+      console.log(users[user].id);
+      return users[user].id;
     }
   }
 };
 
-console.log('SHOULD BE userRandomID')
-getUserID("user@example.com") // should return userRandomID
-console.log('SHOULD BE user2RandomID')
-getUserID("user2@example.com") // should return user2RandomID
-console.log('SHOULD BE user3RandomID')
-getUserID("sarah@example.com") // should return user3RandomID
+console.log('SHOULD BE userRandomID');
+getUserID("user@example.com"); // should return userRandomID
+console.log('SHOULD BE user2RandomID');
+getUserID("user2@example.com"); // should return user2RandomID
+console.log('SHOULD BE user3RandomID');
+getUserID("sarah@example.com"); // should return user3RandomID
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -285,8 +285,8 @@ app.post("/login", (request, response) => {
   console.log(email);
   let password = request.body.password;
   console.log(password);
-  let userID = getUserID(email)
-  console.log(userID)
+  let userID = getUserID(email);
+  console.log(userID);
 
   if (email === '' || password === '') { // if email or password field are left empty return an error
     response.status(400);
@@ -296,8 +296,7 @@ app.post("/login", (request, response) => {
   if (passwordCheckerV2(password, email)) { // if email exists & password matches
     response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
     cookieParser.JSONCookie(userID);
-    }
-  else {
+  } else {
     response.status(403);
     response.send(`Oops, the email or passward was incorrect!`);
     return; // stop the user from being added again
@@ -310,9 +309,8 @@ app.post("/login", (request, response) => {
 
 app.post("/logout", (request, response) => {
   let username = request.body.username;
-  console.log(username)
-  username = cookieParser.JSONCookie(username)
-  let cookie = request.cookies["username"]
+  console.log(username);
+  username = cookieParser.JSONCookie(username);
   console.log(request.cookies["username"]);
   response.clearCookie('username', {domain: 'localhost', path:'/'});  // https://expressjs.com/en/api.html res.clearCookie
   response.redirect("/urls");
