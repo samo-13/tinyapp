@@ -34,6 +34,11 @@ const users = {
     id: "user2RandomID",
     email: "user2@example.com",
     password: "df"
+  },
+  "user3RandomID": {
+    id: "user3RandomID",
+    email: "sarah@example.com",
+    password: "dog"
   }
 };
 
@@ -58,15 +63,21 @@ let generateRandomString = function() { // random string generator
 let emailLookup = function(email) {
   console.log('emailLookup function');
   for (let user in users) {
-    
     if (users[user].email === email) {
       console.log('true');
       return true;
     }
   }
-  console.log('false');
+  console.log('outside false');
   return false;
 };
+
+console.log('user@example.com')
+emailLookup("user@example.com")
+console.log('user2@example.com')
+emailLookup("user2@example.com")
+console.log('sarah@example.com')
+emailLookup("sarah@example.com")
 
 let passwordChecker = function(password, user) {
   console.log('passwordChecker function');
@@ -93,10 +104,34 @@ let passwordCheckerV2 = function(password, email) {
   return false;
 };
 
+console.log('SHOULD BE TRUE')
 passwordChecker('pmd', "userRandomID"); // returns true
+console.log('SHOULD BE FALSE')
 passwordChecker('pm', "userRandomID"); // returns false
+console.log('SHOULD BE TRUE')
 passwordCheckerV2('df', 'user2@example.com'); // returns true
+console.log('SHOULD BE FALSE')
 passwordCheckerV2('pm', "userRandomID"); // returns false
+
+
+let getUserID = function(email) {
+  console.log('getUserID')
+
+  for (let user in users) {
+    if (email === users[user].email) { // was unable to get emailChecker function to work here
+      console.log(users[user].id)
+      return users[user].id
+    }
+  }
+};
+
+console.log('SHOULD BE userRandomID')
+getUserID("user@example.com") // should return userRandomID
+console.log('SHOULD BE user2RandomID')
+getUserID("user2@example.com") // should return user2RandomID
+console.log('SHOULD BE user3RandomID')
+getUserID("sarah@example.com") // should return user3RandomID
+
 // ----------------------------------------------------------------------------------------------------
 // GET
 // ----------------------------------------------------------------------------------------------------
@@ -246,13 +281,12 @@ app.listen(PORT, () => {
 
 app.post("/login", (request, response) => {
 
-  // response.cookie('username', username); // http://expressjs.com/en/api.html#res.cookie
-  // cookieParser.JSONCookie(username);
-
   let email = request.body.email;
   console.log(email);
   let password = request.body.password;
   console.log(password);
+  let userID = getUserID(email)
+  console.log(userID)
 
   if (email === '' || password === '') { // if email or password field are left empty return an error
     response.status(400);
@@ -260,34 +294,16 @@ app.post("/login", (request, response) => {
   }
 
   if (passwordCheckerV2(password, email)) { // if email exists & password matches
-      response.send(`You are logged in!`)
-      return;
+    response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+    cookieParser.JSONCookie(userID);
     }
   else {
     response.status(403);
     response.send(`Oops, the email or passward was incorrect!`);
     return; // stop the user from being added again
   }
-    
 
-
-  // if (!passwordChecker(email, userID)) { // if email exists
-  //   response.status(400);
-  //   response.send(`Oops, the email and password provided do not match`);
-  //   return; // needed to stop the user from being added again
-  // }
-
-  // users[userID] = {
-  //   id: userID,
-  //   email,
-  //   password
-  // };
-
-  // response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
-  // cookieParser.JSONCookie(userID);
-
-  // console.log(users);
-  // response.redirect("/urls");
+  response.redirect("/urls");
 });
 
 app.post("/logout", (request, response) => {
