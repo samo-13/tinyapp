@@ -118,6 +118,25 @@ app.get("/register", (request, response) => {
   response.render("urls_register", templateVars);
 });
 
+app.get("/login", (request, response) => {
+  // let userID = request.cookies["user_id"]
+  // let user = users[userID]
+  // // let email = users[userID].email
+  // console.log('USER:', user);
+  // // console.log('EMAIL:', email)
+
+  // const templateVars = { 
+  //   urls: urlDatabase,
+  //   username: request.cookies["username"],
+  //   user,
+  //   // email
+  //  };
+
+  // console.log('templateVars:', templateVars);
+
+  response.render("urls_login");
+});
+
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
   let userID = request.cookies["user_id"]
