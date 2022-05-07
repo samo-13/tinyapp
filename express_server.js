@@ -205,6 +205,13 @@ app.post("/register", (request, response) => {
   console.log(password)
   let userRandomID = generateRandomString() 
   console.log(userRandomID)
+
+  users[userRandomID] = {
+    id: userRandomID,
+    email,
+    password
+  };
+  console.log(users);
   response.redirect("/urls")
 })
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
