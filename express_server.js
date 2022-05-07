@@ -122,7 +122,7 @@ let getUserID = function(email) {
       console.log(users[user].id);
       return users[user].id;
     }
-  }
+  } return false
 };
 
 console.log("SHOULD BE userRandomID");
@@ -149,16 +149,17 @@ app.get("/urls.json", (request, response) => {
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable.
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
+
   let userID = request.cookies["user_id"];
   let user = users[userID];
-  let email = users[userID].email;
+  // let email = users[userID].email;
   console.log("USER:", user);
   console.log("EMAIL:", email);
   
   const templateVars = {
     urls: urlDatabase,
     user,
-    email
+    // email
   };
 
   response.render("urls_index", templateVars);
@@ -171,14 +172,15 @@ app.get("/register", (request, response) => {
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
 
-  // const templateVars = {
-  //   urls: urlDatabase,
-  //   user,
-    // email
-  // };
+  let user = false;
+
+  const templateVars = {
+    urls: urlDatabase,
+    user
+  };
 
   // console.log("templateVars:", templateVars);
-  response.render("urls_register");
+  response.render("urls_register", templateVars);
 });
 
 app.get("/login", (request, response) => {
@@ -187,16 +189,14 @@ app.get("/login", (request, response) => {
   // let email = users[userID].email
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
+  let user = false;
 
-  // const templateVars = {
-  //   urls: urlDatabase,
-  //   user,
-  //   // email
-  //  };
+  const templateVars = {
+    urls: urlDatabase,
+    user
+  };
 
-  // console.log("templateVars:", templateVars);
-
-  response.render("urls_login");
+  response.render("urls_login", templateVars);
 });
 
 // keep above /urls/:id route definition
