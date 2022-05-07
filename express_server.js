@@ -199,13 +199,12 @@ app.post("/urls/:shortURL/edit", (request, response) => {
 
 app.post("/register", (request, response) => {
   console.log(users);
-  userRandomID = generateRandomString();
-  userRandomID {
-    ID: userRandomID,
-    email: email, 
-    password: password
-  };
-
+  let email = request.body.email;
+  console.log(email)
+  let password = request.body.password;
+  console.log(password)
+  let userRandomID = generateRandomString() 
+  console.log(userRandomID)
   response.redirect("/urls")
 })
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
