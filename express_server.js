@@ -91,15 +91,15 @@ app.get("/urls", (request, response) => {
 app.get("/register", (request, response) => {
   let userID = request.cookies["user_id"]
   let user = users[userID]
-  let email = users[userID].email
+  // let email = users[userID].email
   console.log('USER:', user);
-  console.log('EMAIL:', email)
+  // console.log('EMAIL:', email)
 
   const templateVars = { 
     urls: urlDatabase,
     username: request.cookies["username"],
     user,
-    email
+    // email
    };
 
   console.log('templateVars:', templateVars);
@@ -241,6 +241,11 @@ app.post("/register", (request, response) => {
   console.log(password)
   let userRandomID = generateRandomString()
   console.log(userRandomID)
+
+  if (email === '' || password === '') { // if email or password field are left empty return an error
+    response.status(404);
+    response.send('Please provide a valid email or password');
+  }
 
   users[userRandomID] = {
     id: userRandomID,
