@@ -72,29 +72,56 @@ app.get("/urls.json", (request, response) => {
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable.
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
+  let userID = request.cookies["user_id"]
+  let user = users[userID]
+  let email = users[userID].email
+  console.log('USER:', user);
+  console.log('EMAIL:', email)
+  
   const templateVars = { 
     urls: urlDatabase,
     username: request.cookies["username"],
+    user,
+    email
    };
 
   response.render("urls_index", templateVars);
 });
 
 app.get("/register", (request, response) => {
+  let userID = request.cookies["user_id"]
+  let user = users[userID]
+  let email = users[userID].email
+  console.log('USER:', user);
+  console.log('EMAIL:', email)
+
   const templateVars = { 
     urls: urlDatabase,
     username: request.cookies["username"],
+    user,
+    email
    };
+
+  console.log('templateVars:', templateVars);
 
   response.render("urls_register", templateVars);
 });
 
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
+  let userID = request.cookies["user_id"]
+  let user = users[userID]
+  let email = users[userID].email
+  console.log('USER:', user);
+  console.log('EMAIL:', email)
+
   const templateVars = { 
     urls: urlDatabase,
-    username: request.cookies["username"]
+    username: request.cookies["username"],
+    user,
+    email
    };
+
   response.render("urls_new", templateVars);
 });
 
@@ -103,11 +130,20 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   let shortURL = request.params.shortURL; // https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest.params?redirectedfrom=MSDN&view=netframework-4.8#System_Web_HttpRequest_Params
   console.log(urlDatabase[shortURL]);
 
+  let userID = request.cookies["user_id"]
+  let user = users[userID]
+  let email = users[userID].email
+  console.log('USER:', user);
+  console.log('EMAIL:', email)
+
   const templateVars = {
     shortURL: shortURL,
     longURL: urlDatabase[shortURL],
-    username: request.cookies["username"]
+    username: request.cookies["username"],
+    user,
+    email
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
+
   response.render("urls_show", templateVars);
 });
 
