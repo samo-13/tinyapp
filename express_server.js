@@ -157,7 +157,6 @@ app.get("/urls", (request, response) => {
   
   const templateVars = {
     urls: urlDatabase,
-    username: request.cookies["username"],
     user,
     email
   };
@@ -166,22 +165,20 @@ app.get("/urls", (request, response) => {
 });
 
 app.get("/register", (request, response) => {
-  let userID = request.cookies["user_id"];
-  let user = users[userID];
-  // let email = users[userID].email
-  console.log("USER:", user);
-  // console.log("EMAIL:", email)
+  // let userID = request.cookies["user_id"];
+  // let user = users[userID];
+  // // let email = users[userID].email
+  // console.log("USER:", user);
+  // // console.log("EMAIL:", email)
 
-  const templateVars = {
-    urls: urlDatabase,
-    username: request.cookies["username"],
-    user,
+  // const templateVars = {
+  //   urls: urlDatabase,
+  //   user,
     // email
-  };
+  // };
 
-  console.log("templateVars:", templateVars);
-
-  response.render("urls_register", templateVars);
+  // console.log("templateVars:", templateVars);
+  response.render("urls_register");
 });
 
 app.get("/login", (request, response) => {
@@ -193,7 +190,6 @@ app.get("/login", (request, response) => {
 
   // const templateVars = {
   //   urls: urlDatabase,
-  //   username: request.cookies["username"],
   //   user,
   //   // email
   //  };
@@ -213,7 +209,6 @@ app.get("/urls/new", (request, response) => {
 
   const templateVars = {
     urls: urlDatabase,
-    username: request.cookies["username"],
     user,
     email
   };
@@ -235,7 +230,6 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   const templateVars = {
     shortURL: shortURL,
     longURL: urlDatabase[shortURL],
-    username: request.cookies["username"],
     user,
     email
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
