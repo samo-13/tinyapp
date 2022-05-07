@@ -203,7 +203,7 @@ app.post("/register", (request, response) => {
   console.log(email)
   let password = request.body.password;
   console.log(password)
-  let userRandomID = generateRandomString() 
+  let userRandomID = generateRandomString()
   console.log(userRandomID)
 
   users[userRandomID] = {
@@ -211,6 +211,10 @@ app.post("/register", (request, response) => {
     email,
     password
   };
+
+  response.cookie('user_id', userRandomID) // http://expressjs.com/en/api.html#res.cookie
+  cookieParser.JSONCookie(userRandomID)
+
   console.log(users);
   response.redirect("/urls")
 })
