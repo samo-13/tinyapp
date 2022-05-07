@@ -56,27 +56,47 @@ let generateRandomString = function() { // random string generator
 // generateRandomString();
 
 let emailLookup = function(email) {
+  console.log('emailLookup function');
   for (let user in users) {
-    console.log('emailLookup function');
     
     if (users[user].email === email) {
+      console.log('true');
       return true;
     }
   }
+  console.log('false');
   return false;
 };
 
 let passwordChecker = function(password, user) {
-  for (user in users) {
-    console.log('passwordChecker function');
-    
+  console.log('passwordChecker function');
+  for (let user in users) {
     if (users[user].password === password) {
+      console.log('true')
       return true;
     }
   }
+  console.log('false')
   return false;
 };
 
+let passwordCheckerV2 = function(password, email) {
+  console.log('passwordCheckerV2 function');
+  
+  for (let user in users) {
+    if ((emailLookup(email)) && (users[user].password === password)) {
+      console.log('true')
+      return true;
+    }
+  }
+  console.log('false')
+  return false;
+};
+
+passwordChecker('pmd', "userRandomID"); // returns true
+passwordChecker('pm', "userRandomID"); // returns false
+passwordCheckerV2('df', 'user2@example.com'); // returns true
+passwordCheckerV2('pm', "userRandomID"); // returns false
 // ----------------------------------------------------------------------------------------------------
 // GET
 // ----------------------------------------------------------------------------------------------------
@@ -132,7 +152,7 @@ app.get("/register", (request, response) => {
 app.get("/login", (request, response) => {
   // let userID = request.cookies["user_id"]
   // let user = users[userID]
-  // // let email = users[userID].email
+  // let email = users[userID].email
   // console.log('USER:', user);
   // // console.log('EMAIL:', email)
 
@@ -225,7 +245,49 @@ app.listen(PORT, () => {
 // ----------------------------------------------------------------------------------------------------
 
 app.post("/login", (request, response) => {
-  response.redirect("/urls");
+
+  // response.cookie('username', username); // http://expressjs.com/en/api.html#res.cookie
+  // cookieParser.JSONCookie(username);
+
+  let email = request.body.email;
+  console.log(email);
+  let password = request.body.password;
+  console.log(password);
+
+  if (email === '' || password === '') { // if email or password field are left empty return an error
+    response.status(400);
+    response.send(`Oops, form fields can't be left blank!`);
+  }
+
+  if (passwordCheckerV2(password, email)) { // if email exists & password matches
+      response.send(`You are logged in!`)
+      return;
+    }
+  else {
+    response.status(403);
+    response.send(`Oops, the email or passward was incorrect!`);
+    return; // stop the user from being added again
+  }
+    
+
+
+  // if (!passwordChecker(email, userID)) { // if email exists
+  //   response.status(400);
+  //   response.send(`Oops, the email and password provided do not match`);
+  //   return; // needed to stop the user from being added again
+  // }
+
+  // users[userID] = {
+  //   id: userID,
+  //   email,
+  //   password
+  // };
+
+  // response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+  // cookieParser.JSONCookie(userID);
+
+  // console.log(users);
+  // response.redirect("/urls");
 });
 
 app.post("/logout", (request, response) => {
