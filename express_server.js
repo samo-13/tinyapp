@@ -303,6 +303,8 @@ app.post("/login", (request, response) => {
     return; // stop the user from being added again
   }
 
+  response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+  cookieParser.JSONCookie(userID);
   response.redirect("/urls");
 });
 
