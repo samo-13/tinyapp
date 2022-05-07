@@ -24,6 +24,19 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
+const users = { 
+  "userRandomID": {
+    id: "userRandomID", 
+    email: "user@example.com", 
+    password: "p-m-d"
+  },
+ "user2RandomID": {
+    id: "user2RandomID", 
+    email: "user2@example.com", 
+    password: "d-f"
+  }
+}
+
 // ----------------------------------------------------------------------------------------------------
 // FUNCTIONS
 // ----------------------------------------------------------------------------------------------------
@@ -183,6 +196,18 @@ app.post("/urls/:shortURL/edit", (request, response) => {
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
 });
 
+
+app.post("/register", (request, response) => {
+  console.log(users);
+  userRandomID = generateRandomString();
+  userRandomID {
+    ID: userRandomID,
+    email: email, 
+    password: password
+  };
+
+  response.redirect("/urls")
+})
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
 // development notes
