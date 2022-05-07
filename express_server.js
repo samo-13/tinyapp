@@ -261,6 +261,7 @@ app.post("/register", (request, response) => {
   if (emailLookup(email)) { // if email exists
     response.status(400);
     response.send('Oops, that email already exists!');
+    return; // needed to stop the user from being added again
   };
 
   users[userRandomID] = {
