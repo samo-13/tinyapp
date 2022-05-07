@@ -5,13 +5,13 @@ const PORT = 8080; // default port 8080
 // tells the Express app to use EJS as its templating engine
 app.set("view engine", "ejs"); // set ejs as the view engine
 
-// When our browser submits a POST request, the data in the request body is sent as a Buffer. While this data type is great for transmitting data, it's not readable for us humans. To make this data readable, we will need to install another piece of middleware, body-parser.
+// When our browser submits a POST request, the data in the request body is sent as a Buffer. While this data type is great for transmitting data, it"s not readable for us humans. To make this data readable, we will need to install another piece of middleware, body-parser.
 // The body-parser library will convert the request body from a Buffer into string that we can read.
 // It will then add the data to the req(request) object under the key body.
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require('cookie-parser');
+const cookieParser = require("cookie-parser");
 const request = require("request");
 app.use(cookieParser());
 
@@ -48,7 +48,7 @@ const users = {
 
 let generateRandomString = function() { // random string generator
   const stringLength = 6;
-  let string = '';
+  let string = "";
 
   while (string.length < stringLength) {
     string += Math.random().toString(36).substring(2);
@@ -61,61 +61,61 @@ let generateRandomString = function() { // random string generator
 // generateRandomString();
 
 let emailLookup = function(email) {
-  console.log('emailLookup function');
+  console.log("emailLookup function");
   for (let user in users) {
     if (users[user].email === email) {
-      console.log('true');
+      console.log("true");
       return true;
     }
   }
-  console.log('outside false');
+  console.log("outside false");
   return false;
 };
 
-console.log('user@example.com');
+console.log("user@example.com");
 emailLookup("user@example.com");
-console.log('user2@example.com');
+console.log("user2@example.com");
 emailLookup("user2@example.com");
-console.log('sarah@example.com');
+console.log("sarah@example.com");
 emailLookup("sarah@example.com");
 
 let passwordChecker = function(password, user) {
-  console.log('passwordChecker function');
+  console.log("passwordChecker function");
   for (let user in users) {
     if (users[user].password === password) {
-      console.log('true');
+      console.log("true");
       return true;
     }
   }
-  console.log('false');
+  console.log("false");
   return false;
 };
 
 let passwordCheckerV2 = function(password, email) {
-  console.log('passwordCheckerV2 function');
+  console.log("passwordCheckerV2 function");
   
   for (let user in users) {
     if ((emailLookup(email)) && (users[user].password === password)) {
-      console.log('true');
+      console.log("true");
       return true;
     }
   }
-  console.log('false');
+  console.log("false");
   return false;
 };
 
-console.log('SHOULD BE TRUE');
-passwordChecker('pmd', "userRandomID"); // returns true
-console.log('SHOULD BE FALSE');
-passwordChecker('pm', "userRandomID"); // returns false
-console.log('SHOULD BE TRUE');
-passwordCheckerV2('df', 'user2@example.com'); // returns true
-console.log('SHOULD BE FALSE');
-passwordCheckerV2('pm', "userRandomID"); // returns false
+console.log("SHOULD BE TRUE");
+passwordChecker("pmd", "userRandomID"); // returns true
+console.log("SHOULD BE FALSE");
+passwordChecker("pm", "userRandomID"); // returns false
+console.log("SHOULD BE TRUE");
+passwordCheckerV2("df", "user2@example.com"); // returns true
+console.log("SHOULD BE FALSE");
+passwordCheckerV2("pm", "userRandomID"); // returns false
 
 
 let getUserID = function(email) {
-  console.log('getUserID');
+  console.log("getUserID");
 
   for (let user in users) {
     if (email === users[user].email) { // was unable to get emailChecker function to work here
@@ -125,11 +125,11 @@ let getUserID = function(email) {
   }
 };
 
-console.log('SHOULD BE userRandomID');
+console.log("SHOULD BE userRandomID");
 getUserID("user@example.com"); // should return userRandomID
-console.log('SHOULD BE user2RandomID');
+console.log("SHOULD BE user2RandomID");
 getUserID("user2@example.com"); // should return user2RandomID
-console.log('SHOULD BE user3RandomID');
+console.log("SHOULD BE user3RandomID");
 getUserID("sarah@example.com"); // should return user3RandomID
 
 // ----------------------------------------------------------------------------------------------------
@@ -138,8 +138,8 @@ getUserID("sarah@example.com"); // should return user3RandomID
 
 // app.get(path, callback [, callback ...])
 // Routes HTTP GET requests to the specified path with the specified callback functions.
-app.get("/", (request, response) => { // '/' refers to http://localhost:8080/
-  response.send('Hello!');
+app.get("/", (request, response) => { // "/" refers to http://localhost:8080/
+  response.send("Hello!");
 });
 
 app.get("/urls.json", (request, response) => {
@@ -152,8 +152,8 @@ app.get("/urls", (request, response) => {
   let userID = request.cookies["user_id"];
   let user = users[userID];
   let email = users[userID].email;
-  console.log('USER:', user);
-  console.log('EMAIL:', email);
+  console.log("USER:", user);
+  console.log("EMAIL:", email);
   
   const templateVars = {
     urls: urlDatabase,
@@ -169,8 +169,8 @@ app.get("/register", (request, response) => {
   let userID = request.cookies["user_id"];
   let user = users[userID];
   // let email = users[userID].email
-  console.log('USER:', user);
-  // console.log('EMAIL:', email)
+  console.log("USER:", user);
+  // console.log("EMAIL:", email)
 
   const templateVars = {
     urls: urlDatabase,
@@ -179,7 +179,7 @@ app.get("/register", (request, response) => {
     // email
   };
 
-  console.log('templateVars:', templateVars);
+  console.log("templateVars:", templateVars);
 
   response.render("urls_register", templateVars);
 });
@@ -188,8 +188,8 @@ app.get("/login", (request, response) => {
   // let userID = request.cookies["user_id"]
   // let user = users[userID]
   // let email = users[userID].email
-  // console.log('USER:', user);
-  // // console.log('EMAIL:', email)
+  // console.log("USER:", user);
+  // // console.log("EMAIL:", email)
 
   // const templateVars = {
   //   urls: urlDatabase,
@@ -198,7 +198,7 @@ app.get("/login", (request, response) => {
   //   // email
   //  };
 
-  // console.log('templateVars:', templateVars);
+  // console.log("templateVars:", templateVars);
 
   response.render("urls_login");
 });
@@ -208,8 +208,8 @@ app.get("/urls/new", (request, response) => {
   let userID = request.cookies["user_id"];
   let user = users[userID];
   let email = users[userID].email;
-  console.log('USER:', user);
-  console.log('EMAIL:', email);
+  console.log("USER:", user);
+  console.log("EMAIL:", email);
 
   const templateVars = {
     urls: urlDatabase,
@@ -229,8 +229,8 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   let userID = request.cookies["user_id"];
   let user = users[userID];
   let email = users[userID].email;
-  console.log('USER:', user);
-  console.log('EMAIL:', email);
+  console.log("USER:", user);
+  console.log("EMAIL:", email);
 
   const templateVars = {
     shortURL: shortURL,
@@ -247,7 +247,7 @@ app.get("/u/:shortURL", (request, response) => {
   const shortURL = request.params.shortURL;
   const longURL = urlDatabase[shortURL];
 
-  console.log('longURL:', longURL);
+  console.log("longURL:", longURL);
   response.redirect(longURL);
 });
 // ----------------------------------------------------------------------------------------------------
@@ -258,14 +258,14 @@ app.get("/u/:shortURL", (request, response) => {
 // });
 
 app.get("/helloworld", (request, response) => {
-  const templateVars = { greeting: 'Hello World!' };
+  const templateVars = { greeting: "Hello World!" };
   response.render("hello_world", templateVars);
 });
 
-// the templateVars object above contains the string 'Hello World' under the key greeting.
+// the templateVars object above contains the string "Hello World" under the key greeting.
 // We then pass the templateVars object to the template called hello_world.
 
-// In our hello_world.ejs file, we can display the 'Hello World!' string stored in the templateVars object by calling the key greeting:
+// In our hello_world.ejs file, we can display the "Hello World!" string stored in the templateVars object by calling the key greeting:
 
 // <!-- This would display the string "Hello World!" -->
 // <h1><%= greeting %></h1>
@@ -288,13 +288,13 @@ app.post("/login", (request, response) => {
   let userID = getUserID(email);
   console.log(userID);
 
-  if (email === '' || password === '') { // if email or password field are left empty return an error
+  if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
-    response.send(`Oops, form fields can't be left blank!`);
+    response.send(`Oops, form fields can"t be left blank!`);
   }
 
   if (passwordCheckerV2(password, email)) { // if email exists & password matches
-    response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+    response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
     cookieParser.JSONCookie(userID);
   } else {
     response.status(403);
@@ -302,17 +302,15 @@ app.post("/login", (request, response) => {
     return; // stop the user from being added again
   }
 
-  response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+  response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
   cookieParser.JSONCookie(userID);
   response.redirect("/urls");
 });
 
 app.post("/logout", (request, response) => {
-  let username = request.body.username;
-  console.log(username);
-  username = cookieParser.JSONCookie(username);
-  console.log(request.cookies["username"]);
-  response.clearCookie('username', {domain: 'localhost', path:'/'});  // https://expressjs.com/en/api.html res.clearCookie
+  console.log(request.cookies["user_id"]);
+  response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
+
   response.redirect("/urls");
 });
 
@@ -356,9 +354,9 @@ app.post("/register", (request, response) => {
   let userID = generateRandomString();
   console.log(userID);
 
-  if (email === '' || password === '') { // if email or password field are left empty return an error
+  if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
-    response.send(`Oops, form fields can't be left blank!`);
+    response.send(`Oops, form fields can"t be left blank!`);
   }
 
   if (emailLookup(email)) { // if email exists
@@ -373,7 +371,7 @@ app.post("/register", (request, response) => {
     password
   };
 
-  response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+  response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
   cookieParser.JSONCookie(userID);
 
   console.log(users);
@@ -398,6 +396,6 @@ app.post("/register", (request, response) => {
 // The form tag has two important attributes: action and method.
 // The action attribute tells the form which URL to submit to while the method attribute tells the form which HTTP method to use when submitting the form.
 // The input tag has an important attribute as well: name.
-// This attribute identifies the data we are sending; in this case, it adds the key longURL to the data we'll be sending in the body of our POST request.
+// This attribute identifies the data we are sending; in this case, it adds the key longURL to the data we"ll be sending in the body of our POST request.
 
 // The order of route definitions matters! The GET /urls/new route needs to be defined before the GET /urls/:id route. Routes defined earlier will take precedence, so if we place this route after the /urls/:id definition, any calls to /urls/new will be handled by app.get("/urls/:id", ...) because Express will think that new is a route parameter. A good rule of thumb to follow is that routes should be ordered from most specific to least specific.
