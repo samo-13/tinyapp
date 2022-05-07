@@ -66,6 +66,17 @@ let emailLookup = function(email) {
   return false;
 };
 
+let passwordChecker = function(password, user) {
+  for (user in users) {
+    console.log('passwordChecker function');
+    
+    if (users[user].password === password) {
+      return true;
+    }
+  }
+  return false;
+};
+
 // ----------------------------------------------------------------------------------------------------
 // GET
 // ----------------------------------------------------------------------------------------------------
@@ -214,19 +225,14 @@ app.listen(PORT, () => {
 // ----------------------------------------------------------------------------------------------------
 
 app.post("/login", (request, response) => {
-  let username = request.body.username;
-  console.log(username);
-  response.cookie('username', username); // http://expressjs.com/en/api.html#res.cookie
-  cookieParser.JSONCookie(username);
-
   response.redirect("/urls");
 });
 
 app.post("/logout", (request, response) => {
-  // let username = request.body.username;
-  // console.log(username)
-  // username = cookieParser.JSONCookie(username)
-  // let cookie = request.cookies["username"]
+  let username = request.body.username;
+  console.log(username)
+  username = cookieParser.JSONCookie(username)
+  let cookie = request.cookies["username"]
   console.log(request.cookies["username"]);
   response.clearCookie('username', {domain: 'localhost', path:'/'});  // https://expressjs.com/en/api.html res.clearCookie
   response.redirect("/urls");
@@ -269,28 +275,28 @@ app.post("/register", (request, response) => {
   console.log(email);
   let password = request.body.password;
   console.log(password);
-  let userRandomID = generateRandomString();
-  console.log(userRandomID);
+  let userID = generateRandomString();
+  console.log(userID);
 
   if (email === '' || password === '') { // if email or password field are left empty return an error
     response.status(400);
-    response.send('Please provide a valid email or password');
+    response.send(`Oops, form fields can't be left blank!`);
   }
 
   if (emailLookup(email)) { // if email exists
-    response.status(400);
-    response.send('Oops, that email already exists!');
+    response.status(403);
+    response.send(`Oops, that email does not exist!`);
     return; // needed to stop the user from being added again
   }
 
-  users[userRandomID] = {
-    id: userRandomID,
+  users[userID] = {
+    id: userID,
     email,
     password
   };
 
-  response.cookie('user_id', userRandomID); // http://expressjs.com/en/api.html#res.cookie
-  cookieParser.JSONCookie(userRandomID);
+  response.cookie('user_id', userID); // http://expressjs.com/en/api.html#res.cookie
+  cookieParser.JSONCookie(userID);
 
   console.log(users);
   response.redirect("/urls");
