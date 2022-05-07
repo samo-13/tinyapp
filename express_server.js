@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 const cookieParser = require('cookie-parser');
 const request = require("request");
-app.use(cookieParser())
+app.use(cookieParser());
 
 // ----------------------------------------------------------------------------------------------------
 // DATA
@@ -24,18 +24,18 @@ const urlDatabase = {
   "9sm5xK": "http://www.google.com"
 };
 
-const users = { 
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "pmd"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "df"
   }
-}
+};
 
 // ----------------------------------------------------------------------------------------------------
 // FUNCTIONS
@@ -63,8 +63,8 @@ let emailLookup = function(email) {
       return true;
     }
   }
-  return false
-}
+  return false;
+};
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -83,35 +83,35 @@ app.get("/urls.json", (request, response) => {
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable.
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
-  let userID = request.cookies["user_id"]
-  let user = users[userID]
-  let email = users[userID].email
+  let userID = request.cookies["user_id"];
+  let user = users[userID];
+  let email = users[userID].email;
   console.log('USER:', user);
-  console.log('EMAIL:', email)
+  console.log('EMAIL:', email);
   
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     username: request.cookies["username"],
     user,
     email
-   };
+  };
 
   response.render("urls_index", templateVars);
 });
 
 app.get("/register", (request, response) => {
-  let userID = request.cookies["user_id"]
-  let user = users[userID]
+  let userID = request.cookies["user_id"];
+  let user = users[userID];
   // let email = users[userID].email
   console.log('USER:', user);
   // console.log('EMAIL:', email)
 
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     username: request.cookies["username"],
     user,
     // email
-   };
+  };
 
   console.log('templateVars:', templateVars);
 
@@ -125,7 +125,7 @@ app.get("/login", (request, response) => {
   // console.log('USER:', user);
   // // console.log('EMAIL:', email)
 
-  // const templateVars = { 
+  // const templateVars = {
   //   urls: urlDatabase,
   //   username: request.cookies["username"],
   //   user,
@@ -139,18 +139,18 @@ app.get("/login", (request, response) => {
 
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
-  let userID = request.cookies["user_id"]
-  let user = users[userID]
-  let email = users[userID].email
+  let userID = request.cookies["user_id"];
+  let user = users[userID];
+  let email = users[userID].email;
   console.log('USER:', user);
-  console.log('EMAIL:', email)
+  console.log('EMAIL:', email);
 
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     username: request.cookies["username"],
     user,
     email
-   };
+  };
 
   response.render("urls_new", templateVars);
 });
@@ -160,11 +160,11 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   let shortURL = request.params.shortURL; // https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest.params?redirectedfrom=MSDN&view=netframework-4.8#System_Web_HttpRequest_Params
   console.log(urlDatabase[shortURL]);
 
-  let userID = request.cookies["user_id"]
-  let user = users[userID]
-  let email = users[userID].email
+  let userID = request.cookies["user_id"];
+  let user = users[userID];
+  let email = users[userID].email;
   console.log('USER:', user);
-  console.log('EMAIL:', email)
+  console.log('EMAIL:', email);
 
   const templateVars = {
     shortURL: shortURL,
@@ -215,9 +215,9 @@ app.listen(PORT, () => {
 
 app.post("/login", (request, response) => {
   let username = request.body.username;
-  console.log(username)
-  response.cookie('username', username) // http://expressjs.com/en/api.html#res.cookie
-  cookieParser.JSONCookie(username)
+  console.log(username);
+  response.cookie('username', username); // http://expressjs.com/en/api.html#res.cookie
+  cookieParser.JSONCookie(username);
 
   response.redirect("/urls");
 });
@@ -227,9 +227,9 @@ app.post("/logout", (request, response) => {
   // console.log(username)
   // username = cookieParser.JSONCookie(username)
   // let cookie = request.cookies["username"]
-  console.log(request.cookies["username"])
+  console.log(request.cookies["username"]);
   response.clearCookie('username', {domain: 'localhost', path:'/'});  // https://expressjs.com/en/api.html res.clearCookie
-  response.redirect("/urls")
+  response.redirect("/urls");
 });
 
 app.post("/urls", (request, response) => {
@@ -254,7 +254,7 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 
 app.post("/urls/:shortURL/edit", (request, response) => {
   const shortURL = request.params.shortURL;
-  let editLongURL = request.body.editLongURL
+  let editLongURL = request.body.editLongURL;
   // console.log(editLongURL)
   // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
   urlDatabase[shortURL] = editLongURL; // replace old longURL with the new one submitted
@@ -266,11 +266,11 @@ app.post("/urls/:shortURL/edit", (request, response) => {
 app.post("/register", (request, response) => {
   console.log(users);
   let email = request.body.email;
-  console.log(email)
+  console.log(email);
   let password = request.body.password;
-  console.log(password)
-  let userRandomID = generateRandomString()
-  console.log(userRandomID)
+  console.log(password);
+  let userRandomID = generateRandomString();
+  console.log(userRandomID);
 
   if (email === '' || password === '') { // if email or password field are left empty return an error
     response.status(400);
@@ -281,7 +281,7 @@ app.post("/register", (request, response) => {
     response.status(400);
     response.send('Oops, that email already exists!');
     return; // needed to stop the user from being added again
-  };
+  }
 
   users[userRandomID] = {
     id: userRandomID,
@@ -289,12 +289,12 @@ app.post("/register", (request, response) => {
     password
   };
 
-  response.cookie('user_id', userRandomID) // http://expressjs.com/en/api.html#res.cookie
-  cookieParser.JSONCookie(userRandomID)
+  response.cookie('user_id', userRandomID); // http://expressjs.com/en/api.html#res.cookie
+  cookieParser.JSONCookie(userRandomID);
 
   console.log(users);
-  response.redirect("/urls")
-})
+  response.redirect("/urls");
+});
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
 // development notes
