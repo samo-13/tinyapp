@@ -28,12 +28,12 @@ const users = {
   "userRandomID": {
     id: "userRandomID", 
     email: "user@example.com", 
-    password: "p-m-d"
+    password: "pmd"
   },
  "user2RandomID": {
     id: "user2RandomID", 
     email: "user2@example.com", 
-    password: "d-f"
+    password: "df"
   }
 }
 
@@ -54,6 +54,17 @@ let generateRandomString = function() { // random string generator
 };
 
 // generateRandomString();
+
+let emailLookup = function(email) {
+  for (let user in users) {
+    console.log('emailLookup function');
+    
+    if (users[user].email === email) {
+      return true;
+    }
+  }
+  return false
+}
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -243,9 +254,14 @@ app.post("/register", (request, response) => {
   console.log(userRandomID)
 
   if (email === '' || password === '') { // if email or password field are left empty return an error
-    response.status(404);
+    response.status(400);
     response.send('Please provide a valid email or password');
   }
+
+  if (emailLookup(email)) { // if email exists
+    response.status(400);
+    response.send('Oops, that email already exists!');
+  };
 
   users[userRandomID] = {
     id: userRandomID,
