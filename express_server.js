@@ -227,7 +227,9 @@ app.get("/urls/new", (request, response) => {
   let userID = request.cookies["user_id"];
   let user = users[userID];
 
-  // loginStatusCheck(user);
+  if (user === undefined) {
+    response.redirect("/login")
+  }
 
   const templateVars = {
     urls: urlDatabase,
