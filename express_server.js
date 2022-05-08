@@ -33,7 +33,7 @@ const urlDatabase = {
         longURL: "https://www.google.ca",
         userID: "aJ48lW"
     },
-    i3BoGr: {
+    hgjklf: {
       longURL: "https://www.banana.ca",
       userID: "bsghjr" // for testing different user id
   }
@@ -155,11 +155,11 @@ getUserIDFromEmail("sarah@example.com"); // should return user3RandomID
 // 
 // };
 
-let getShortURLS = function() {
-  for (let shortURL in urlDatabase) {
-    console.log(shortURL);
-  }
-};
+// let getShortURLS = function() {
+//   for (let shortURL in urlDatabase) {
+//     console.log(shortURL);
+//   }
+// };
 
 let urlsForUser = function(id) {
   let userUrls = {};
@@ -178,6 +178,22 @@ let urlsForUser = function(id) {
 };
 
 urlsForUser('aJ48lW');
+
+let urlChecker = function(shortUrlInput, user) {
+  for (let shortURL in urlDatabase) {
+    if ((shortURL === shortUrlInput) && (urlDatabase[shortURL].userID === user) ) {
+      console.log('true')
+      return true;
+    }
+  }
+  console.log('false')
+  return false;
+}
+
+console.log('****SHOULD BE FALSE****')
+urlChecker("hgjklf", "aJ48lW")
+console.log('****SHOULD BE TRUE****')
+urlChecker("b6UTxQ", "aJ48lW")
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -312,7 +328,7 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   response.redirect("/urls")
 });
 
-app.get("/urls/:id", (request, response) => {
+app.get("/urls/:id", (request, response) => { // is this the same as line 292?
   response.redirect("/urls") // likely need to adjust
 });
 
@@ -411,10 +427,17 @@ app.post("/urls/:shortURL/delete", (request, response) => {
     return;
   }
 
+  if (urlChecker(shortURL, user)){
   const shortURL = request.params.shortURL;
   delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
   response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
   return;
+  }
+
+  response.status(400);
+  response.send(`Oops, you don't have access to that url`)
+  response.redirect("/urls"); 
+
 });
 
 app.post("/urls/:shortURL/edit", (request, response) => {
