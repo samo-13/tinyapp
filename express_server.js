@@ -306,6 +306,16 @@ app.get("/u/:shortURL", (request, response) => {
   console.log("longURL:", longURL);
   response.redirect(longURL);
 });
+
+
+app.get("/urls/:shortURL/delete", (request, response) => {
+  response.redirect("/urls")
+});
+
+app.get("/urls/:id", (request, response) => {
+  response.redirect("/urls") // likely need to adjust
+});
+
 // ----------------------------------------------------------------------------------------------------
 // example route handlers
 
@@ -397,6 +407,7 @@ app.post("/urls/:shortURL/delete", (request, response) => {
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
     response.send('Oops, you must be registered and logged in with TinyApp to add, edit, and delete urls')
+    response.redirect("/urls"); 
     return;
   }
 
@@ -413,7 +424,8 @@ app.post("/urls/:shortURL/edit", (request, response) => {
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
     response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
-    return;
+    response.redirect("/urls"); 
+
   }
 
   const shortURL = request.params.shortURL;
