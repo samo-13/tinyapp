@@ -329,6 +329,13 @@ app.post("/logout", (request, response) => {
 });
 
 app.post("/urls", (request, response) => {
+  let user = request.cookies.user_id
+
+  if (user === undefined) {
+    response.status(400);
+    response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
+    return;
+  }
 
   let shortURL = generateRandomString();
   let longURL = request.body.longURL;
