@@ -114,8 +114,8 @@ console.log("SHOULD BE FALSE");
 passwordCheckerV2("pm", "userRandomID"); // returns false
 
 
-let getUserID = function(email) {
-  console.log("getUserID");
+let getUserIDFromEmail = function(email) {
+  console.log("getUserIDFromEmail");
 
   for (let user in users) {
     if (email === users[user].email) { // was unable to get emailChecker function to work here
@@ -126,11 +126,34 @@ let getUserID = function(email) {
 };
 
 console.log("SHOULD BE userRandomID");
-getUserID("user@example.com"); // should return userRandomID
+getUserIDFromEmail("user@example.com"); // should return userRandomID
 console.log("SHOULD BE user2RandomID");
-getUserID("user2@example.com"); // should return user2RandomID
+getUserIDFromEmail("user2@example.com"); // should return user2RandomID
 console.log("SHOULD BE user3RandomID");
-getUserID("sarah@example.com"); // should return user3RandomID
+getUserIDFromEmail("sarah@example.com"); // should return user3RandomID
+
+// let getUserIDFromCookie = function() {
+//
+// };
+
+// let getEmailFromUserID = function(user) {
+// 
+// };
+
+let loginStatusCheck = function(user) {
+  console.log('loginStatusCheck')
+  if (user === undefined) {
+    console.log('User is not logged in!')
+    let email = null
+    return email;
+    // return false;
+  }
+  
+  if (user) {
+  console.log('User is logged in!')
+  return true;
+  }
+};
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -149,17 +172,15 @@ app.get("/urls.json", (request, response) => {
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable.
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
-
+  
   let userID = request.cookies["user_id"];
   let user = users[userID];
-  // let email = users[userID].email;
-  console.log("USER:", user);
-  console.log("EMAIL:", email);
-  
+
   const templateVars = {
     urls: urlDatabase,
     user,
-    // email
+    // user: getUserIDFromCookie(),
+    // email: getEmailFromUserID(user)
   };
 
   response.render("urls_index", templateVars);
@@ -201,16 +222,15 @@ app.get("/login", (request, response) => {
 
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
+
   let userID = request.cookies["user_id"];
   let user = users[userID];
-  let email = users[userID].email;
-  console.log("USER:", user);
-  console.log("EMAIL:", email);
+
+  // loginStatusCheck(user);
 
   const templateVars = {
     urls: urlDatabase,
     user,
-    email
   };
 
   response.render("urls_new", templateVars);
@@ -223,15 +243,12 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
 
   let userID = request.cookies["user_id"];
   let user = users[userID];
-  let email = users[userID].email;
   console.log("USER:", user);
-  console.log("EMAIL:", email);
 
   const templateVars = {
     shortURL: shortURL,
     longURL: urlDatabase[shortURL],
     user,
-    email
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
 
   response.render("urls_show", templateVars);
@@ -279,7 +296,7 @@ app.post("/login", (request, response) => {
   console.log(email);
   let password = request.body.password;
   console.log(password);
-  let userID = getUserID(email);
+  let userID = getUserIDFromEmail(email);
   console.log(userID);
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
@@ -305,7 +322,7 @@ app.post("/logout", (request, response) => {
   console.log(request.cookies["user_id"]);
   response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
 
-  response.redirect("/urls");
+  response.redirect("/login");
 });
 
 app.post("/urls", (request, response) => {
