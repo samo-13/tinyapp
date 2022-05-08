@@ -19,9 +19,20 @@ app.use(cookieParser());
 // DATA
 // ----------------------------------------------------------------------------------------------------
 
+// const urlDatabase = {
+//   "b2xVn2": "http://www.lighthouselabs.ca",
+//   "9sm5xK": "http://www.google.com"
+// };
+
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+        longURL: "https://www.tsn.ca",
+        userID: "aJ48lW"
+    },
+    i3BoGr: {
+        longURL: "https://www.google.ca",
+        userID: "aJ48lW"
+    }
 };
 
 const users = {
@@ -145,6 +156,12 @@ let loginStatusCheck = function() {
  
 };
 
+let getShortURLS = function() {
+  for (let shortURL in urlDatabase) {
+    console.log(shortURL);
+  }
+};
+
 // ----------------------------------------------------------------------------------------------------
 // GET
 // ----------------------------------------------------------------------------------------------------
@@ -165,6 +182,7 @@ app.get("/urls", (request, response) => {
   
   let userID = request.cookies["user_id"];
   let user = users[userID];
+  getShortURLS()
 
   const templateVars = {
     urls: urlDatabase,
@@ -250,7 +268,7 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
 
   const templateVars = {
     shortURL: shortURL,
-    longURL: urlDatabase[shortURL],
+    longURL: urlDatabase[shortURL].longURL,
     user,
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
 
@@ -259,7 +277,7 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
 
 app.get("/u/:shortURL", (request, response) => {
   const shortURL = request.params.shortURL;
-  const longURL = urlDatabase[shortURL];
+  const longURL = urlDatabase[shortURL].longURL;
 
   console.log("longURL:", longURL);
   response.redirect(longURL);
@@ -331,7 +349,7 @@ app.post("/logout", (request, response) => {
 app.post("/urls", (request, response) => {
   let user = request.cookies.user_id
 
-  if (user === undefined) {
+  if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
     response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
     return;
@@ -342,7 +360,7 @@ app.post("/urls", (request, response) => {
 
   console.log(request.body.longURL); // log the POST request body to the console
 
-  urlDatabase[shortURL] = longURL; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
+urlDatabase[shortURL] = { longURL: longURL, userID: user }; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
   console.log(urlDatabase);
   response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
   return;
@@ -357,10 +375,11 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 
 app.post("/urls/:shortURL/edit", (request, response) => {
   const shortURL = request.params.shortURL;
-  let editLongURL = request.body.editLongURL;
+  const editLongURL = request.body.editLongURL;
+  const user = request.session.user_id;
   // console.log(editLongURL)
   // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
-  urlDatabase[shortURL] = editLongURL; // replace old longURL with the new one submitted
+  urlDatabase[shortURL] = { longURL: editLongURL, userID: user }; // replace old longURL with the new one submitted
   // console.log(urlDatabase)
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
 });
