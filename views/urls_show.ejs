@@ -8,6 +8,7 @@
 
 <body>
   <%- include('partials/_header') %>
+  <% if(user) { %>
   <div class="card text-center">
       <div class="card-header"></div>
       <div class="card-body">
@@ -30,6 +31,10 @@
           </button>
         </div>
       </form>
+      <% } else{ %>
+        <h3>You are not logged in. </br>
+        <a href="/login">Log in</a> to see this url!</h3>
+    <% } %>
       </div>
     <div class="card-footer text-muted"></div>
   </div>

@@ -391,6 +391,15 @@ urlDatabase[shortURL] = { longURL: longURL, userID: user }; // save the shortURL
 });
 
 app.post("/urls/:shortURL/delete", (request, response) => {
+
+  const user = request.cookies.user_id;
+  
+  if (user === undefined) { // send error and message to non users trying to add a new URL
+    response.status(400);
+    response.send('Oops, you must be registered and logged in with TinyApp to add, edit, and delete urls')
+    return;
+  }
+
   const shortURL = request.params.shortURL;
   delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
   response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
@@ -398,9 +407,18 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 });
 
 app.post("/urls/:shortURL/edit", (request, response) => {
+
+  const user = request.cookies.user_id;
+
+  if (user === undefined) { // send error and message to non users trying to add a new URL
+    response.status(400);
+    response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
+    return;
+  }
+
   const shortURL = request.params.shortURL;
   const editLongURL = request.body.editLongURL;
-  const user = request.session.user_id;
+  
   // console.log(editLongURL)
   // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
   urlDatabase[shortURL] = { longURL: editLongURL, userID: user }; // replace old longURL with the new one submitted
