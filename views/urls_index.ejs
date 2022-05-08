@@ -11,10 +11,9 @@
 <body>
   <%- include('partials/_header') %>
 
-  <% if(!user) { %>
-    <p>You are not logged in. Log in to see your urls!</p>
-  <% } else{ %>
+
   <main style="margin: 1em;">
+    <% if(user) { %>
     <h3>My URLs</h3>
     <table class="table">
       <thead>
@@ -37,6 +36,9 @@
       <% } %>
       </tbody>
     </table>
+    <% } else{ %>
+      <h3>You are not logged in. </br>
+      <a href="/login">Log in</a> to see your urls!</h3>
   </main>
   <% } %>
 

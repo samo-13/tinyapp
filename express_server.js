@@ -32,12 +32,16 @@ const urlDatabase = {
     i3BoGr: {
         longURL: "https://www.google.ca",
         userID: "aJ48lW"
-    }
+    },
+    i3BoGr: {
+      longURL: "https://www.banana.ca",
+      userID: "bsghjr" // for testing different user id
+  }
 };
 
 const users = {
-  "userRandomID": {
-    id: "userRandomID",
+  "bsghjr": {
+    id: "bsghjr",
     email: "user@example.com",
     password: "pmd"
   },
@@ -46,8 +50,8 @@ const users = {
     email: "user2@example.com",
     password: "df"
   },
-  "user3RandomID": {
-    id: "user3RandomID",
+  "aJ48lW": {
+    id: "aJ48lW",
     email: "sarah@example.com",
     password: "dog"
   }
@@ -151,16 +155,29 @@ getUserIDFromEmail("sarah@example.com"); // should return user3RandomID
 // 
 // };
 
-let loginStatusCheck = function() {
-  console.log('loginStatusCheck')
- 
-};
-
 let getShortURLS = function() {
   for (let shortURL in urlDatabase) {
     console.log(shortURL);
   }
 };
+
+let urlsForUser = function(id) {
+  let userUrls = {};
+
+  for (let shortURL in urlDatabase) {
+
+    if (urlDatabase[shortURL].userID === id) {
+
+      // console.log('TEST 1:', urlDatabase[shortURL])
+      let userUrlObject = urlDatabase[shortURL]
+      userUrls[shortURL] = userUrlObject
+    }
+  }
+  console.log('TEST 2:', userUrls)
+  return userUrls
+};
+
+urlsForUser('aJ48lW');
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -180,13 +197,20 @@ app.get("/urls.json", (request, response) => {
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
   
-  let userID = request.cookies["user_id"];
-  let user = users[userID];
-  getShortURLS()
+  let user = request.cookies["user_id"];
+  let urls = urlsForUser(user)
+  console.log('TESTING USER:', user);
+  user = users[user];
+  console.log('TESTING USER:', user);
+  // let user = users[userID];
+  console.log(user);
+  // console.log(id);
+  // getShortURLS()
 
   const templateVars = {
-    urls: urlDatabase,
+    urls,
     user,
+    // id
     // user: getUserIDFromCookie(),
     // email: getEmailFromUserID(user)
   };
