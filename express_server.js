@@ -140,19 +140,9 @@ getUserIDFromEmail("sarah@example.com"); // should return user3RandomID
 // 
 // };
 
-let loginStatusCheck = function(user) {
+let loginStatusCheck = function() {
   console.log('loginStatusCheck')
-  if (user === undefined) {
-    console.log('User is not logged in!')
-    let email = null
-    return email;
-    // return false;
-  }
-  
-  if (user) {
-  console.log('User is logged in!')
-  return true;
-  }
+ 
 };
 
 // ----------------------------------------------------------------------------------------------------
@@ -186,38 +176,49 @@ app.get("/urls", (request, response) => {
   response.render("urls_index", templateVars);
 });
 
-app.get("/register", (request, response) => {
-  // let userID = request.cookies["user_id"];
-  // let user = users[userID];
-  // // let email = users[userID].email
-  // console.log("USER:", user);
-  // // console.log("EMAIL:", email)
-
-  let user = false;
-
-  const templateVars = {
-    urls: urlDatabase,
-    user
-  };
-
-  // console.log("templateVars:", templateVars);
-  response.render("urls_register", templateVars);
-});
-
 app.get("/login", (request, response) => {
   // let userID = request.cookies["user_id"]
   // let user = users[userID]
   // let email = users[userID].email
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
-  let user = false;
+
+  const user = request.cookies.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
+  console.log(user)
+
+  if (user !== undefined) {
+    response.redirect("/urls")
+    return
+  }
 
   const templateVars = {
     urls: urlDatabase,
-    user
+    user,
   };
 
   response.render("urls_login", templateVars);
+});
+
+app.get("/register", (request, response) => {
+  // let userID = request.cookies["user_id"];
+  // let user = users[userID];
+  // // let email = users[userID].email
+  // console.log("USER:", user);
+  // // console.log("EMAIL:", email)
+  const user = request.cookies.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
+  console.log(user)
+
+  if (user !== undefined) {
+    response.redirect("/urls")
+    return
+  }
+
+  const templateVars = {
+    urls: urlDatabase,
+    user,
+  };
+
+  response.render("urls_register", templateVars);
 });
 
 // keep above /urls/:id route definition
