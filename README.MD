@@ -37,13 +37,13 @@ This was created as an assignment for the Lighthouse Labs Web Development Bootca
 ## User Testing Tips
 - Placeholder users are available to help with testing
 1. **Potato**
-- **email:** potato@gmail.com 
-- **password:** 123 
-- **LongUrl:** https://www.tsn.ca 
-- **ShortUrl:** b6UTxQ
+  - **email:** potato@gmail.com 
+  - **password:** 123 
+  - **LongUrl:** https://www.tsn.ca 
+  - **ShortUrl:** b6UTxQ
 
 2. **Banana**
-- **email:** banana@gmail.com 
-- **password:** 123 
-- **LongUrl:** https://www.google.ca 
-- **ShortUrl:** i3BoGr
+  - **email:** banana@gmail.com 
+  - **password:** 123 
+  - **LongUrl:** https://www.google.ca 
+  - **ShortUrl:** i3BoGr
