@@ -52,21 +52,21 @@ const urlDatabase = {
 };
 
 const users = {
-  "bsghjr": {
-    id: "bsghjr",
-    email: "user@example.com",
-    hashedPassword: "pmd"
-  },
-  "user2RandomID": {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    hashedPassword: "df"
-  },
-  "aJ48lW": {
-    id: "aJ48lW",
-    email: "sarah@example.com",
-    hashedPassword: "dog"
-  },
+  // "bsghjr": {
+  //   id: "bsghjr",
+  //   email: "user@example.com",
+  //   hashedPassword: "pmd"
+  // },
+  // "user2RandomID": {
+  //   id: "user2RandomID",
+  //   email: "user2@example.com",
+  //   hashedPassword: "df"
+  // },
+  // "aJ48lW": {
+  //   id: "aJ48lW",
+  //   email: "sarah@example.com",
+  //   hashedPassword: "dog"
+  // },
   "7yyet6": {
   id: "7yyet6",
   email: "potato@gmail.com",
@@ -111,17 +111,17 @@ emailLookup("user2@example.com");
 console.log("sarah@example.com");
 emailLookup("sarah@example.com");
 
-let passwordChecker = function(password, user) {
-  console.log("passwordChecker function");
-  for (let user in users) {
-    if (users[user].password === password) {
-      console.log("true");
-      return true;
-    }
-  }
-  console.log("false");
-  return false;
-};
+// let passwordChecker = function(password, user) {
+//   console.log("passwordChecker function");
+//   for (let user in users) {
+//     if (users[user].password === password) {
+//       console.log("true");
+//       return true;
+//     }
+//   }
+//   console.log("false");
+//   return false;
+// };
 
 let passwordCheckerV2 = function(password, email) {
   console.log("passwordCheckerV2 function");
@@ -136,33 +136,34 @@ let passwordCheckerV2 = function(password, email) {
   return false;
 };
 
-console.log("SHOULD BE TRUE");
-passwordChecker("pmd", "userRandomID"); // returns true
-console.log("SHOULD BE FALSE");
-passwordChecker("pm", "userRandomID"); // returns false
+// console.log("SHOULD BE TRUE");
+// passwordChecker("pmd", "userRandomID"); // returns true
+// console.log("SHOULD BE FALSE");
+// passwordChecker("pm", "userRandomID"); // returns false
 console.log("SHOULD BE TRUE");
 passwordCheckerV2("df", "user2@example.com"); // returns true
 console.log("SHOULD BE FALSE");
 passwordCheckerV2("pm", "userRandomID"); // returns false
 
 
-let getUserIDFromEmail = function(email) {
-  console.log("getUserIDFromEmail");
+let getUsersByEmail = function(email, users) {
+  console.log("getUsersByEmail");
 
   for (let user in users) {
     if (email === users[user].email) { // was unable to get emailChecker function to work here
       console.log(users[user].id);
-      return users[user].id;
+      user = users[user].id
+      return user
     }
   } return false
 };
 
 console.log("SHOULD BE userRandomID");
-getUserIDFromEmail("user@example.com"); // should return userRandomID
+getUsersByEmail("user@example.com"); // should return userRandomID
 console.log("SHOULD BE user2RandomID");
-getUserIDFromEmail("user2@example.com"); // should return user2RandomID
+getUsersByEmail("user2@example.com"); // should return user2RandomID
 console.log("SHOULD BE user3RandomID");
-getUserIDFromEmail("sarah@example.com"); // should return user3RandomID
+getUsersByEmail("sarah@example.com"); // should return user3RandomID
 
 // let getUserIDFromCookie = function() {
 //
@@ -431,7 +432,7 @@ app.post("/login", (request, response) => {
   let password = request.body.password;
   let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn't being read ******
   console.log(password);
-  let userID = getUserIDFromEmail(email);
+  let userID = getUsersByEmail(email, users);
   console.log(userID);
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
