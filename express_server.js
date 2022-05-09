@@ -18,14 +18,21 @@ const { response } = require("express");
 // app.use(cookieParser());
 
 
-const cookieSession = require('cookie-session')
+const cookieSession = require("cookie-session")
 app.use(cookieSession({
-  name: 'user_id',
-  keys: ['my', 'secret', 'keys'],
+  name: "user_id",
+  keys: ["my", "secret", "keys"],
 
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }))
+
+// ----------------------------------------------------------------------------------------------------
+// REQUIRE FUNCTIONS FROM HELPERS.JS
+// ----------------------------------------------------------------------------------------------------
+
+const { getUserByEmail } = require("./helpers")
+
 
 // ----------------------------------------------------------------------------------------------------
 // DATA
@@ -51,26 +58,16 @@ const urlDatabase = {
   }
 };
 
-const users = {
-  // "bsghjr": {
-  //   id: "bsghjr",
-  //   email: "user@example.com",
-  //   hashedPassword: "pmd"
-  // },
-  // "user2RandomID": {
-  //   id: "user2RandomID",
-  //   email: "user2@example.com",
-  //   hashedPassword: "df"
-  // },
-  // "aJ48lW": {
-  //   id: "aJ48lW",
-  //   email: "sarah@example.com",
-  //   hashedPassword: "dog"
-  // },
+const users = { // keep for testing!
   "7yyet6": {
-  id: "7yyet6",
-  email: "potato@gmail.com",
-  hashedPassword: "$2a$10$9IHbBuRy2dWpV6SP3H5fHudhlC.fsWRCefw52FIAO.viemmLIt9UG"
+    id: "7yyet6",
+    email: "potato@gmail.com",
+    hashedPassword: "$2a$10$9IHbBuRy2dWpV6SP3H5fHudhlC.fsWRCefw52FIAO.viemmLIt9UG"
+  },
+  "i78m8z":{
+    id: "i78m8z",
+    email: "banana@gmail.com",
+    hashedPassword: "$2a$10$yfSIH3bG/yzGIkx66E9u9uEXn/uOPbR1RIxjUZMME8OAUB0gwS4yG"
   }
 };
 
@@ -146,17 +143,17 @@ console.log("SHOULD BE FALSE");
 passwordCheckerV2("pm", "userRandomID"); // returns false
 
 
-let getUserByEmail = function(email, users) {
-  console.log("getUserByEmail");
+// let getUserByEmail = function(email, users) {
+//   console.log("getUserByEmail");
 
-  for (let user in users) {
-    if (email === users[user].email) { // was unable to get emailChecker function to work here
-      console.log(users[user].id);
-      user = users[user].id
-      return user
-    }
-  } return false
-};
+//   for (let user in users) {
+//     if (email === users[user].email) { // was unable to get emailChecker function to work here
+//       console.log(users[user].id);
+//       user = users[user].id
+//       return user
+//     }
+//   } return false
+// };
 
 console.log("SHOULD BE userRandomID");
 getUserByEmail("user@example.com"); // should return userRandomID
@@ -214,20 +211,20 @@ console.log("****SHOULD BE TRUE****")
 urlChecker("b6UTxQ", "aJ48lW")
 
 let getLongURL = function(shortURL){
-  let longURL = ''
+  let longURL = ""
 
   for (let shortURL in urlDatabase) {
-    console.log('getLongURL FUNCTION:')
+    console.log("getLongURL FUNCTION:")
     if ((shortURL === shortURL)) {
       longURL = urlDatabase[shortURL].longURL
-      console.log('LONGURL:', longURL);
+      console.log("LONGURL:", longURL);
       return longURL
     }
   }
 }
 
 console.log("****SHOULD BE TSN****")
-getLongURL('b6UTxQ');
+getLongURL("b6UTxQ");
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -430,7 +427,7 @@ app.post("/login", (request, response) => {
   let email = request.body.email;
   console.log(email);
   let password = request.body.password;
-  let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn't being read ******
+  let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn"t being read ******
   console.log(password);
   let userID = getUserByEmail(email, users);
   console.log(userID);
