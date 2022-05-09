@@ -13,8 +13,8 @@ const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
 // const cookieParser = require("cookie-parser");
-const request = require("request");
-const { response } = require("express");
+// const request = require("request");
+// const { response } = require("express");
 // app.use(cookieParser());
 
 // ----------------------------------------------------------------------------------------------------
@@ -25,14 +25,14 @@ app.listen(PORT, () => {
 
 // ----------------------------------------------------------------------------------------------------
 
-const cookieSession = require("cookie-session")
+const cookieSession = require("cookie-session");
 app.use(cookieSession({
   name: "user_id",
   keys: ["my", "secret", "keys"],
 
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
-}))
+}));
 
 // ----------------------------------------------------------------------------------------------------
 // DATA --- keep above functions and routes
@@ -45,13 +45,13 @@ app.use(cookieSession({
 
 const urlDatabase = {
   b6UTxQ: {
-        longURL: "https://www.tsn.ca",
-        userID: "7yyet6"
-    },
-    i3BoGr: {
-        longURL: "https://www.google.ca",
-        userID: "aJ48lW"
-    }
+    longURL: "https://www.tsn.ca",
+    userID: "7yyet6"
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW"
+  }
 };
 
 const users = { // keep for testing!
@@ -72,12 +72,12 @@ const users = { // keep for testing!
 // REQUIRE FUNCTIONS FROM HELPERS.JS
 // ----------------------------------------------------------------------------------------------------
 
-const { 
+const {
   getUserByEmail
- } = require("./helpers")
+} = require("./helpers");
 
 
- let generateRandomString = function() { // random string generator
+let generateRandomString = function() { // random string generator
   const stringLength = 6;
   let string = "";
 
@@ -108,7 +108,6 @@ let emailLookup = function(email) {
 // ----------------------------------------------------------------------------------------------------
 
 let passwordChecker = function(password, email) {
-  console.log("passwordCheckerV2 function");
   
   for (let user in users) {
     if ((users[user].email) && (bcrypt.compareSync(password, users[user].hashedPassword))) {
@@ -127,34 +126,34 @@ let urlsForUser = function(id) {
 
   for (let shortURL in urlDatabase) {
     if (urlDatabase[shortURL].userID === id) {
-      let userUrlObject = urlDatabase[shortURL]
-      userUrls[shortURL] = userUrlObject
+      let userUrlObject = urlDatabase[shortURL];
+      userUrls[shortURL] = userUrlObject;
     }
   }
-  console.log("TEST 2:", userUrls)
-  return userUrls
+  console.log("TEST 2:", userUrls);
+  return userUrls;
 };
 
 // ----------------------------------------------------------------------------------------------------
 
 let urlChecker = function(shortUrlInput, user) {
   for (let shortURL in urlDatabase) {
-    if ((shortURL === shortUrlInput) && (urlDatabase[shortURL].userID === user) ) {
-      console.log("true")
+    if ((shortURL === shortUrlInput) && (urlDatabase[shortURL].userID === user)) {
+      console.log("true");
       return true;
     }
   }
-  console.log("false")
+  console.log("false");
   return false;
-}
+};
 
 // ----------------------------------------------------------------------------------------------------
 
-let checkShortURL = function(input){
-  let result = ''
+let checkShortURL = function(input) {
+  let result = '';
   for (let shortURL in urlDatabase) {
-    console.log('INPUT:', input)
-    console.log('SHORTURL:', shortURL)
+    console.log('INPUT:', input);
+    console.log('SHORTURL:', shortURL);
 
     if (shortURL === input) {
       result = 'true';
@@ -162,24 +161,24 @@ let checkShortURL = function(input){
       result = 'false';
     }
   } return result;
-}
+};
 
-console.log(checkShortURL('b6UTxQ'))
-console.log(checkShortURL('hgjkn'))
+console.log(checkShortURL('b6UTxQ'));
+console.log(checkShortURL('hgjkn'));
 
-let getLongURL = function(input){
-  let longURL = ""
+let getLongURL = function(input) {
+  let longURL = "";
   for (let shortURL in urlDatabase) {
-    console.log("getLongURL FUNCTION:")
+    console.log("getLongURL FUNCTION:");
     if (input === shortURL) {
-      longURL = urlDatabase[shortURL].longURL
+      longURL = urlDatabase[shortURL].longURL;
       console.log("LONGURL:", longURL);
-      return longURL
+      return longURL;
     }
   }
-}
+};
 
-console.log("****SHOULD BE TSN****")
+console.log("****SHOULD BE TSN****");
 getLongURL("b6UTxQ");
 
 // ----------------------------------------------------------------------------------------------------
@@ -194,9 +193,9 @@ app.get("/", (request, response) => { // "/" refers to http://localhost:8080/
 
 // ----------------------------------------------------------------------------------------------------
 
-app.get("/urls.json", (request, response) => {
-  response.json(urlDatabase[shortURL]);
-});
+// app.get("/urls.json", (request, response) => {
+//   response.json(urlDatabase[shortURL]);
+// });
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -205,7 +204,7 @@ app.get("/urls.json", (request, response) => {
 app.get("/urls", (request, response) => {
   
   let user = request.session["user_id"];
-  let urls = urlsForUser(user)
+  let urls = urlsForUser(user);
   console.log("TESTING USER:", user);
   user = users[user];
   console.log("TESTING USER:", user);
@@ -234,12 +233,12 @@ app.get("/login", (request, response) => {
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
 
-  const user = request.session.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
-  console.log(user)
+  const user = request.session.user_id; // gets the cookie value or {} if none https://expressjs.com/en/api.html
+  console.log(user);
 
   if (user !== undefined) {
-    response.redirect("/urls")
-    return
+    response.redirect("/urls");
+    return;
   }
 
   const templateVars = {
@@ -257,12 +256,12 @@ app.get("/register", (request, response) => {
   // // let email = users[userID].email
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
-  const user = request.session.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
-  console.log(user)
+  const user = request.session.user_id; // gets the cookie value or {} if none https://expressjs.com/en/api.html
+  console.log(user);
 
   if (user !== undefined) {
-    response.redirect("/urls")
-    return
+    response.redirect("/urls");
+    return;
   }
 
   const templateVars = {
@@ -282,7 +281,7 @@ app.get("/urls/new", (request, response) => {
   let user = users[userID];
 
   if (user === undefined) {
-    response.redirect("/login")
+    response.redirect("/login");
   }
 
   const templateVars = {
@@ -320,10 +319,10 @@ console.log(urlDatabase);
 
 app.get("/u/:shortURL", (request, response) => {
   let shortURL = request.params.shortURL;
-  console.log('***SHORTURL:***', shortURL)
+  console.log('***SHORTURL:***', shortURL);
   // shortURL = urlDatabase[shortURL];
   if (checkShortURL(shortURL)) {
-    let longURL = getLongURL(shortURL)
+    let longURL = getLongURL(shortURL);
     response.redirect(longURL);
     return;
   }
@@ -342,22 +341,22 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   let userID = request.session["user_id"];
   let user = users[userID];
   const shortURL = request.params.shortURL;
-  let checkURL = urlChecker(shortURL, userID)
-  console.log("USER", user)
-  console.log("USERID", userID)
-  console.log("SHORTURL:", shortURL)
+  let checkURL = urlChecker(shortURL, userID);
+  console.log("USER", user);
+  console.log("USERID", userID);
+  console.log("SHORTURL:", shortURL);
   console.log(urlDatabase);
-  console.log("CHECKURL:", checkURL)
+  console.log("CHECKURL:", checkURL);
 
-  templateVars = {
-    user
-  }
+  // const templateVars = {
+  //   user
+  // };
 
   if (checkURL) {
-    response.redirect("/urls")
+    response.redirect("/urls");
   }
 
-  response.redirect("/access-denied")
+  response.redirect("/access-denied");
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -367,18 +366,18 @@ app.get("/access-denied", (request, response) => {
   let user = users[userID];
   console.log(urlDatabase);
 
-  templateVars = {
+  const templateVars = {
     user
-  }
+  };
   
-  response.render("urls_permission", templateVars)
+  response.render("urls_permission", templateVars);
   // response.redirect("/urls")
 });
 
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/urls/:id", (request, response) => { // is this the same as line 292?
-  response.redirect("/urls") // likely need to adjust
+  response.redirect("/urls"); // likely need to adjust
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -421,19 +420,19 @@ app.post("/login", (request, response) => {
 app.post("/logout", (request, response) => {
   console.log(request.session["user_id"]);
   // response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
-  request.session = null; // clear cookie 
+  request.session = null; // clear cookie
   response.redirect("/login");
 });
 
 // ----------------------------------------------------------------------------------------------------
 
 app.post("/urls", (request, response) => {
-  let user = request.session.user_id
+  let user = request.session.user_id;
 
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
-    response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls")
-    return;
+    response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls");
+    // return;
   }
 
   let shortURL = generateRandomString();
@@ -442,9 +441,9 @@ app.post("/urls", (request, response) => {
   console.log(request.body.longURL); // log the POST request body to the console
 
   urlDatabase[shortURL] = { longURL: longURL, userID: user }; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
-    console.log(urlDatabase);
-    response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
-    return;
+  console.log(urlDatabase);
+  response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
+  // return;
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -456,22 +455,22 @@ app.post("/urls/:shortURL/delete", (request, response) => {
   
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
-    response.send("Oops, you must be registered and logged in with TinyApp to add, edit, and delete urls")
-    response.redirect("/urls"); 
+    response.send("Oops, you must be registered and logged in with TinyApp to add, edit, and delete urls");
+    response.redirect("/urls");
     return;
   }
 
   // THIS ISN"T DOING ANYTHING!!!!!!
-  if ((urlChecker(shortURL, user)) !== true){
+  if ((urlChecker(shortURL, user)) !== true) {
     response.status(400);
-    response.send(`Oops, you don"t have access to that url`)
-    console.log("NOT YOUR URL TO DELETE")
+    response.send(`Oops, you don"t have access to that url`);
+    console.log("NOT YOUR URL TO DELETE");
     response.redirect("/access-denied");
   }
 
   delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
   response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-  console.log("YOUR URL IS DELETED")
+  console.log("YOUR URL IS DELETED");
   console.log(urlDatabase);
   // return;
   
@@ -491,22 +490,22 @@ app.post("/urls/:shortURL/edit", (request, response) => {
 
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
-    response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls")
-    response.redirect("/urls"); 
+    response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls");
+    response.redirect("/urls");
   }
 
   // THIS ISN"T DOING ANYTHING!!!!!!
   
-  if ((urlChecker(shortURL, user)) !== true){
-    response.status(400);      
-    response.send(`Oops, you don"t have access to that url`)
-    console.log("NOT YOUR URL TO EDIT")
-  };
+  if ((urlChecker(shortURL, user)) !== true) {
+    response.status(400);
+    response.send(`Oops, you don"t have access to that url`);
+    console.log("NOT YOUR URL TO EDIT");
+  }
   
-    response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-    console.log("YOUR URL IS EDITED")
-    console.log(urlDatabase);
-    // return;
+  response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
+  console.log("YOUR URL IS EDITED");
+  console.log(urlDatabase);
+  // return;
 
   // console.log(editLongURL)
   // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
@@ -614,6 +613,6 @@ app.post("/register", (request, response) => {
 // module.exports = { // do not remove or alter
 //   users,
 //   urlDatabase
-// } 
+// }
 
 // ----------------------------------------------------------------------------------------------------

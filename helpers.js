@@ -1,12 +1,5 @@
 // ----------------------------------------------------------------------------------------------------
-// require users and urlDatabase objects from express_server
-// ----------------------------------------------------------------------------------------------------
-
-// let { users } = require("./express_server")
-// let { urlDatabase } = require("./express_server")
-
-// ----------------------------------------------------------------------------------------------------
-// helper functions for TinyApp
+// helper function for TinyApp
 // ----------------------------------------------------------------------------------------------------
 
 let getUserByEmail = function(email, users) {
@@ -15,10 +8,10 @@ let getUserByEmail = function(email, users) {
   for (let user in users) {
     if (email === users[user].email) { // was unable to get emailChecker function to work here
       console.log(users[user].id);
-      user = users[user].id
-      return user
+      user = users[user].id;
+      return user;
     }
-  } return false
+  } return false;
 };
 
 // ----------------------------------------------------------------------------------------------------
@@ -29,6 +22,6 @@ let getUserByEmail = function(email, users) {
 
 module.exports = { // do not remove or alter
   getUserByEmail
-} 
+};
 
 // ----------------------------------------------------------------------------------------------------
