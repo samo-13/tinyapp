@@ -154,17 +154,32 @@ let urlChecker = function(shortUrlInput, user) {
 
 // ----------------------------------------------------------------------------------------------------
 
-let getLongURL = function(shortURL){
-  let longURL = ""
+let checkShortURL = function(input){
   for (let shortURL in urlDatabase) {
-    console.log("getLongURL FUNCTION:")
-    if (shortURL === shortURL) {
-      longURL = urlDatabase[shortURL].longURL
-      console.log("LONGURL:", longURL);
-      return longURL
+    if (input === shortURL) {
+      return true
+    } else {
+      return false;
     }
   }
 }
+
+let getLongURL = function(input){
+  let longURL = ""
+  for (let shortURL in urlDatabase) {
+    console.log("getLongURL FUNCTION:")
+    if (input === shortURL) {
+      longURL = urlDatabase[shortURL].longURL
+      console.log("LONGURL:", longURL);
+      return longURL
+    } else {
+      return false;
+    }
+  }
+}
+
+console.log("****SHOULD BE TSN****")
+getLongURL("b6UTxQ");
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -301,10 +316,16 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
 
 app.get("/u/:shortURL", (request, response) => {
   let shortURL = request.params.shortURL;
-  shortURL = urlDatabase[shortURL];
-  let longURL = getLongURL(shortURL)
-
-  response.redirect(longURL);
+  // shortURL = urlDatabase[shortURL];
+  if (checkShortURL(shortURL)) {
+    let longURL = getLongURL(shortURL)
+    response.redirect(longURL);
+  }
+  
+  if (checkShortURL(shortURL) === false) {
+    response.status(400);
+    response.send(`Oops, no URL matches in our database!`);
+  }
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -528,30 +549,30 @@ app.post("/register", (request, response) => {
 // FUNCTION TESTS / DRIVER CODE
 // ----------------------------------------------------------------------------------------------------
 
-generateRandomString();
-console.log("user@example.com");
-emailLookup("user@example.com");
-console.log("user2@example.com");
-emailLookup("user2@example.com");
-console.log("sarah@example.com");
-emailLookup("sarah@example.com");
-console.log("SHOULD BE TRUE");
-passwordChecker("df", "user2@example.com"); // returns true
-console.log("SHOULD BE FALSE");
-passwordChecker("pm", "userRandomID"); // returns false
-console.log("SHOULD BE userRandomID");
-getUserByEmail("user@example.com"); // should return userRandomID
-console.log("SHOULD BE user2RandomID");
-getUserByEmail("user2@example.com"); // should return user2RandomID
-console.log("SHOULD BE user3RandomID");
-getUserByEmail("sarah@example.com"); // should return user3RandomID
-urlsForUser("aJ48lW");
-console.log("****SHOULD BE FALSE****")
-urlChecker("hgjklf", "aJ48lW")
-console.log("****SHOULD BE TRUE****")
-urlChecker("b6UTxQ", "aJ48lW")
-console.log("****SHOULD BE TSN****")
-getLongURL("b6UTxQ");
+// generateRandomString();
+// console.log("user@example.com");
+// emailLookup("user@example.com");
+// console.log("user2@example.com");
+// emailLookup("user2@example.com");
+// console.log("sarah@example.com");
+// emailLookup("sarah@example.com");
+// console.log("SHOULD BE TRUE");
+// passwordChecker("df", "user2@example.com"); // returns true
+// console.log("SHOULD BE FALSE");
+// passwordChecker("pm", "userRandomID"); // returns false
+// console.log("SHOULD BE userRandomID");
+// getUserByEmail("user@example.com"); // should return userRandomID
+// console.log("SHOULD BE user2RandomID");
+// getUserByEmail("user2@example.com"); // should return user2RandomID
+// console.log("SHOULD BE user3RandomID");
+// getUserByEmail("sarah@example.com"); // should return user3RandomID
+// urlsForUser("aJ48lW");
+// console.log("****SHOULD BE FALSE****")
+// urlChecker("hgjklf", "aJ48lW")
+// console.log("****SHOULD BE TRUE****")
+// urlChecker("b6UTxQ", "aJ48lW")
+// console.log("****SHOULD BE TSN****")
+// getLongURL("b6UTxQ");
 
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
