@@ -13,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 const cookieParser = require("cookie-parser");
 const request = require("request");
+const { response } = require("express");
 app.use(cookieParser());
 
 // ----------------------------------------------------------------------------------------------------
@@ -325,7 +326,39 @@ app.get("/u/:shortURL", (request, response) => {
 
 
 app.get("/urls/:shortURL/delete", (request, response) => {
-  response.redirect("/urls")
+  let userID = request.cookies["user_id"];
+  let user = users[userID];
+  const shortURL = request.params.shortURL;
+  let checkURL = urlChecker(shortURL, userID)
+  console.log('USER', user)
+  console.log('USERID', userID)
+  console.log('SHORTURL:', shortURL)
+  console.log(urlDatabase);
+  console.log('CHECKURL:', checkURL)
+
+
+  templateVars = {
+    user
+  }
+
+  if (checkURL) {
+    response.redirect("/urls")
+  }
+
+  response.redirect("/access-denied")
+});
+
+app.get("/access-denied", (request, response) => {
+  let userID = request.cookies["user_id"];
+  let user = users[userID];
+  console.log(urlDatabase);
+
+  templateVars = {
+    user
+  }
+  
+  response.render("urls_permission", templateVars)
+  // response.redirect("/urls")
 });
 
 app.get("/urls/:id", (request, response) => { // is this the same as line 292?
@@ -410,15 +443,16 @@ app.post("/urls", (request, response) => {
 
   console.log(request.body.longURL); // log the POST request body to the console
 
-urlDatabase[shortURL] = { longURL: longURL, userID: user }; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
-  console.log(urlDatabase);
-  response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
-  return;
+  urlDatabase[shortURL] = { longURL: longURL, userID: user }; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
+    console.log(urlDatabase);
+    response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
+    return;
 });
 
 app.post("/urls/:shortURL/delete", (request, response) => {
 
   const user = request.cookies.user_id;
+  const shortURL = request.params.shortURL;
   
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
@@ -427,33 +461,51 @@ app.post("/urls/:shortURL/delete", (request, response) => {
     return;
   }
 
-  if (urlChecker(shortURL, user)){
-  const shortURL = request.params.shortURL;
-  delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
-  response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-  return;
+  // THIS ISN'T DOING ANYTHING!!!!!!
+  if ((urlChecker(shortURL, user)) !== true){
+    response.status(400);
+    response.send(`Oops, you don't have access to that url`)
+    console.log('NOT YOUR URL TO DELETE')
+    response.redirect("/access-denied");
   }
 
-  response.status(400);
-  response.send(`Oops, you don't have access to that url`)
-  response.redirect("/urls"); 
+  delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
+  response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
+  console.log('YOUR URL IS DELETED')
+  console.log(urlDatabase);
+  // return;
+  
+  // to test:
+  // log in as user@example.com
+  // go to --> http://localhost:8080/urls/i3BoG/delete
 
 });
 
 app.post("/urls/:shortURL/edit", (request, response) => {
 
   const user = request.cookies.user_id;
+  const shortURL = request.params.shortURL;
+  const editLongURL = request.body.editLongURL;
 
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
     response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
     response.redirect("/urls"); 
-
   }
 
-  const shortURL = request.params.shortURL;
-  const editLongURL = request.body.editLongURL;
+  // THIS ISN'T DOING ANYTHING!!!!!!
   
+  if ((urlChecker(shortURL, user)) !== true){
+    response.status(400);      
+    response.send(`Oops, you don't have access to that url`)
+    console.log('NOT YOUR URL TO EDIT')
+  };
+  
+    response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
+    console.log('YOUR URL IS EDITED')
+    console.log(urlDatabase);
+    // return;
+
   // console.log(editLongURL)
   // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
   urlDatabase[shortURL] = { longURL: editLongURL, userID: user }; // replace old longURL with the new one submitted
@@ -514,5 +566,4 @@ app.post("/register", (request, response) => {
 // The action attribute tells the form which URL to submit to while the method attribute tells the form which HTTP method to use when submitting the form.
 // The input tag has an important attribute as well: name.
 // This attribute identifies the data we are sending; in this case, it adds the key longURL to the data we"ll be sending in the body of our POST request.
-
 // The order of route definitions matters! The GET /urls/new route needs to be defined before the GET /urls/:id route. Routes defined earlier will take precedence, so if we place this route after the /urls/:id definition, any calls to /urls/new will be handled by app.get("/urls/:id", ...) because Express will think that new is a route parameter. A good rule of thumb to follow is that routes should be ordered from most specific to least specific.
