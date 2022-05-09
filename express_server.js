@@ -12,10 +12,20 @@ app.set("view engine", "ejs"); // set ejs as the view engine
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-const cookieParser = require("cookie-parser");
+// const cookieParser = require("cookie-parser");
 const request = require("request");
 const { response } = require("express");
-app.use(cookieParser());
+// app.use(cookieParser());
+
+
+const cookieSession = require('cookie-session')
+app.use(cookieSession({
+  name: 'user_id',
+  keys: ['my', 'secret', 'keys'],
+
+  // Cookie Options
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
 
 // ----------------------------------------------------------------------------------------------------
 // DATA
@@ -29,7 +39,7 @@ app.use(cookieParser());
 const urlDatabase = {
   b6UTxQ: {
         longURL: "https://www.tsn.ca",
-        userID: "aJ48lW"
+        userID: "7yyet6"
     },
     i3BoGr: {
         longURL: "https://www.google.ca",
@@ -202,6 +212,22 @@ urlChecker("hgjklf", "aJ48lW")
 console.log("****SHOULD BE TRUE****")
 urlChecker("b6UTxQ", "aJ48lW")
 
+let getLongURL = function(shortURL){
+  let longURL = ''
+
+  for (let shortURL in urlDatabase) {
+    console.log('getLongURL FUNCTION:')
+    if ((shortURL === shortURL)) {
+      longURL = urlDatabase[shortURL].longURL
+      console.log('LONGURL:', longURL);
+      return longURL
+    }
+  }
+}
+
+console.log("****SHOULD BE TSN****")
+getLongURL('b6UTxQ');
+
 // ----------------------------------------------------------------------------------------------------
 // GET
 // ----------------------------------------------------------------------------------------------------
@@ -220,7 +246,7 @@ app.get("/urls.json", (request, response) => {
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
 app.get("/urls", (request, response) => {
   
-  let user = request.cookies["user_id"];
+  let user = request.session["user_id"];
   let urls = urlsForUser(user)
   console.log("TESTING USER:", user);
   user = users[user];
@@ -248,7 +274,7 @@ app.get("/login", (request, response) => {
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
 
-  const user = request.cookies.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
+  const user = request.session.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
   console.log(user)
 
   if (user !== undefined) {
@@ -269,7 +295,7 @@ app.get("/register", (request, response) => {
   // // let email = users[userID].email
   // console.log("USER:", user);
   // // console.log("EMAIL:", email)
-  const user = request.cookies.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
+  const user = request.session.user_id // gets the cookie value or {} if none https://expressjs.com/en/api.html
   console.log(user)
 
   if (user !== undefined) {
@@ -288,7 +314,7 @@ app.get("/register", (request, response) => {
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
 
-  let userID = request.cookies["user_id"];
+  let userID = request.session["user_id"];
   let user = users[userID];
 
   if (user === undefined) {
@@ -308,7 +334,7 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   let shortURL = request.params.shortURL; // https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest.params?redirectedfrom=MSDN&view=netframework-4.8#System_Web_HttpRequest_Params
   console.log(urlDatabase[shortURL]);
 
-  let userID = request.cookies["user_id"];
+  let userID = request.session["user_id"];
   let user = users[userID];
   console.log("USER:", user);
 
@@ -322,16 +348,16 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
 });
 
 app.get("/u/:shortURL", (request, response) => {
-  const shortURL = request.params.shortURL;
-  const longURL = urlDatabase[shortURL].longURL;
+  let shortURL = request.params.shortURL;
+  shortURL = urlDatabase[shortURL];
+  let longURL = getLongURL(shortURL)
 
-  console.log("longURL:", longURL);
   response.redirect(longURL);
 });
 
 
 app.get("/urls/:shortURL/delete", (request, response) => {
-  let userID = request.cookies["user_id"];
+  let userID = request.session["user_id"];
   let user = users[userID];
   const shortURL = request.params.shortURL;
   let checkURL = urlChecker(shortURL, userID)
@@ -340,7 +366,6 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   console.log("SHORTURL:", shortURL)
   console.log(urlDatabase);
   console.log("CHECKURL:", checkURL)
-
 
   templateVars = {
     user
@@ -354,7 +379,7 @@ app.get("/urls/:shortURL/delete", (request, response) => {
 });
 
 app.get("/access-denied", (request, response) => {
-  let userID = request.cookies["user_id"];
+  let userID = request.session["user_id"];
   let user = users[userID];
   console.log(urlDatabase);
 
@@ -404,7 +429,7 @@ app.post("/login", (request, response) => {
   let email = request.body.email;
   console.log(email);
   let password = request.body.password;
-  let hashedPassword = bcrypt.hashSync(password, 10);
+  let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn't being read ******
   console.log(password);
   let userID = getUserIDFromEmail(email);
   console.log(userID);
@@ -415,28 +440,30 @@ app.post("/login", (request, response) => {
   }
 
   if (passwordCheckerV2(password, email)) { // if email exists & password matches
-    response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
-    cookieParser.JSONCookie(userID);
+    
+    request.session.user_id = userID;
+    // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
+    // cookieParser.JSONCookie(userID);
   } else {
     response.status(403);
     response.send(`Oops, the email or passward was incorrect!`);
     return; // stop the user from being added again
   }
-
-  response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
-  cookieParser.JSONCookie(userID);
+  request.session.user_id = userID;
+  // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
+  // cookieParser.JSONCookie(userID);
   response.redirect("/urls");
 });
 
 app.post("/logout", (request, response) => {
-  console.log(request.cookies["user_id"]);
-  response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
-
+  console.log(request.session["user_id"]);
+  // response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
+  request.session = null; // clear cookie 
   response.redirect("/login");
 });
 
 app.post("/urls", (request, response) => {
-  let user = request.cookies.user_id
+  let user = request.session.user_id
 
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
@@ -457,7 +484,7 @@ app.post("/urls", (request, response) => {
 
 app.post("/urls/:shortURL/delete", (request, response) => {
 
-  const user = request.cookies.user_id;
+  let user = request.session["user_id"];
   const shortURL = request.params.shortURL;
   
   if (user === undefined) { // send error and message to non users trying to add a new URL
@@ -489,7 +516,7 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 
 app.post("/urls/:shortURL/edit", (request, response) => {
 
-  const user = request.cookies.user_id;
+  let user = request.session["user_id"];
   const shortURL = request.params.shortURL;
   const editLongURL = request.body.editLongURL;
 
@@ -548,8 +575,9 @@ app.post("/register", (request, response) => {
     hashedPassword
   };
 
-  response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
-  cookieParser.JSONCookie(userID);
+  request.session.user_id = userID;
+  // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
+  // cookieParser.JSONCookie(userID);
 
   console.log(users);
   response.redirect("/urls");
