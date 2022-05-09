@@ -12,11 +12,6 @@ app.set("view engine", "ejs"); // set ejs as the view engine
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// const cookieParser = require("cookie-parser");
-// const request = require("request");
-// const { response } = require("express");
-// app.use(cookieParser());
-
 // ----------------------------------------------------------------------------------------------------
 
 app.listen(PORT, () => {
@@ -38,11 +33,6 @@ app.use(cookieSession({
 // DATA --- keep above functions and routes
 // ----------------------------------------------------------------------------------------------------
 
-// const urlDatabase = {
-//   "b2xVn2": "http://www.lighthouselabs.ca",
-//   "9sm5xK": "http://www.google.com"
-// };
-
 const urlDatabase = {
   b6UTxQ: {
     longURL: "https://www.tsn.ca",
@@ -53,6 +43,8 @@ const urlDatabase = {
     userID: "aJ48lW"
   }
 };
+
+// ----------------------------------------------------------------------------------------------------
 
 const users = { // keep for testing!
   "7yyet6": {
@@ -68,12 +60,10 @@ const users = { // keep for testing!
 };
 
 // ----------------------------------------------------------------------------------------------------
-// REQUIRE FUNCTIONS FROM HELPERS.JS
+// REQUIRE FUNCTION FROM HELPERS.JS 
 // ----------------------------------------------------------------------------------------------------
 
-const {
-  getUserByEmail
-} = require("./helpers");
+const { getUserByEmail } = require("./helpers");
 
 
 let generateRandomString = function() { // random string generator
@@ -88,8 +78,9 @@ let generateRandomString = function() { // random string generator
   return string;
 };
 
-// generateRandomString();
-
+// ----------------------------------------------------------------------------------------------------
+// ADDITIONAL HELPER FUNCTIONS
+// ----------------------------------------------------------------------------------------------------
 // ----------------------------------------------------------------------------------------------------
 
 let emailLookup = function(email) {
@@ -184,7 +175,6 @@ getLongURL("b6UTxQ");
 // GET
 // ----------------------------------------------------------------------------------------------------
 
-// app.get(path, callback [, callback ...])
 // Routes HTTP GET requests to the specified path with the specified callback functions.
 app.get("/", (request, response) => { // "/" refers to http://localhost:8080/
   response.send("Hello!");
@@ -204,20 +194,11 @@ app.get("/urls", (request, response) => {
   
   let user = request.session["user_id"];
   let urls = urlsForUser(user);
-  console.log("TESTING USER:", user);
   user = users[user];
-  console.log("TESTING USER:", user);
-  // let user = users[userID];
-  console.log(user);
-  // console.log(id);
-  // getShortURLS()
 
   const templateVars = {
     urls,
     user,
-    // id
-    // user: getUserIDFromCookie(),
-    // email: getEmailFromUserID(user)
   };
 
   response.render("urls_index", templateVars);
@@ -226,14 +207,7 @@ app.get("/urls", (request, response) => {
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/login", (request, response) => {
-  // let userID = request.cookies["user_id"]
-  // let user = users[userID]
-  // let email = users[userID].email
-  // console.log("USER:", user);
-  // // console.log("EMAIL:", email)
-
   const user = request.session.user_id; // gets the cookie value or {} if none https://expressjs.com/en/api.html
-  console.log(user);
 
   if (user !== undefined) {
     response.redirect("/urls");
@@ -251,10 +225,6 @@ app.get("/login", (request, response) => {
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/register", (request, response) => {
-  // let user = users[userID];
-  // // let email = users[userID].email
-  // console.log("USER:", user);
-  // // console.log("EMAIL:", email)
   const user = request.session.user_id; // gets the cookie value or {} if none https://expressjs.com/en/api.html
   console.log(user);
 
@@ -275,7 +245,6 @@ app.get("/register", (request, response) => {
 
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
-
   let userID = request.session["user_id"];
   let user = users[userID];
 
@@ -294,13 +263,9 @@ app.get("/urls/new", (request, response) => {
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/urls/:shortURL", (request, response) => { // The : in front of shortURL indicates that shortURL is a route parameter
-  
   let shortURL = request.params.shortURL; // https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest.params?redirectedfrom=MSDN&view=netframework-4.8#System_Web_HttpRequest_Params
-  console.log(urlDatabase[shortURL]);
-
   let userID = request.session["user_id"];
   let user = users[userID];
-  console.log("USER:", user);
 
   const templateVars = {
     shortURL: shortURL,
@@ -312,14 +277,11 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   return;
 });
 
-console.log(urlDatabase);
-
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/u/:shortURL", (request, response) => {
   let shortURL = request.params.shortURL;
-  console.log('***SHORTURL:***', shortURL);
-  // shortURL = urlDatabase[shortURL];
+
   if (checkShortURL(shortURL)) {
     let longURL = getLongURL(shortURL);
     response.redirect(longURL);
@@ -341,11 +303,6 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   let user = users[userID];
   const shortURL = request.params.shortURL;
   let checkURL = urlChecker(shortURL, userID);
-  console.log("USER", user);
-  console.log("USERID", userID);
-  console.log("SHORTURL:", shortURL);
-  console.log(urlDatabase);
-  console.log("CHECKURL:", checkURL);
 
   if (checkURL) {
     response.redirect("/urls");
@@ -354,6 +311,9 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   response.redirect("/access-denied");
 });
 
+  // to test:
+  // log in as user@example.com
+  // go to --> http://localhost:8080/urls/i3BoG/delete
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/urls/:shortURL/edit", (request, response) => {
@@ -361,11 +321,6 @@ app.get("/urls/:shortURL/edit", (request, response) => {
   let shortURL = request.params.shortURL;
   let checkURL = urlChecker(shortURL, userID);
 
-  console.log("USERID", userID);
-  console.log("SHORTURL:", shortURL);
-  console.log(urlDatabase);
-  console.log("CHECKURL:", checkURL);
-
   if (checkURL) {
     response.redirect("/urls");
   }
@@ -373,19 +328,21 @@ app.get("/urls/:shortURL/edit", (request, response) => {
   response.redirect("/access-denied");
 });
 
+  // to test:
+  // log in as user@example.com
+  // go to --> http://localhost:8080/urls/i3BoG/edit
+
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/access-denied", (request, response) => {
   let userID = request.session["user_id"];
   let user = users[userID];
-  console.log(urlDatabase);
 
   const templateVars = {
     user
   };
   
   response.render("urls_permission", templateVars);
-  // response.redirect("/urls")
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -401,12 +358,8 @@ app.get("/urls/:id", (request, response) => { // is this the same as line 292?
 app.post("/login", (request, response) => {
 
   let email = request.body.email;
-  // console.log(email);
   let password = request.body.password;
-  // let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn"t being read ******
-  // console.log(password);
   let userID = getUserByEmail(email, users);
-  // console.log(userID);
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
@@ -414,27 +367,21 @@ app.post("/login", (request, response) => {
   }
 
   if (passwordChecker(password, email)) { // if email exists & password matches
-    
     request.session.user_id = userID;
-    // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
-    // cookieParser.JSONCookie(userID);
   } else {
     response.status(403);
     response.send(`Oops, the email or passward was incorrect!`);
     return; // stop the user from being added again
   }
+  
   request.session.user_id = userID;
-  // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
-  // cookieParser.JSONCookie(userID);
   response.redirect("/urls");
 });
 
 // ----------------------------------------------------------------------------------------------------
 
 app.post("/logout", (request, response) => {
-  console.log(request.session["user_id"]);
-  // response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
-  request.session = null; // clear cookie
+  request.session = null; // clear cookie upon logout
   response.redirect("/login");
 });
 
@@ -446,18 +393,13 @@ app.post("/urls", (request, response) => {
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
     response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls");
-    // return;
   }
 
   let shortURL = generateRandomString();
   let longURL = request.body.longURL;
 
-  console.log(request.body.longURL); // log the POST request body to the console
-
   urlDatabase[shortURL] = { longURL: longURL, userID: user }; // save the shortURL-longURL key-value pair to the urlDatabase when it receives a POST request to /urls
-  console.log(urlDatabase);
   response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
-  // return;
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -474,24 +416,8 @@ app.post("/urls/:shortURL/delete", (request, response) => {
     return;
   }
 
-  // THIS ISN"T DOING ANYTHING!!!!!!
-  if ((urlChecker(shortURL, user)) !== true) {
-    response.status(400);
-    response.send(`Oops, you don"t have access to that url`);
-    console.log("NOT YOUR URL TO DELETE");
-    response.redirect("/access-denied");
-  }
-
   delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
   response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-  console.log("YOUR URL IS DELETED");
-  console.log(urlDatabase);
-  // return;
-  
-  // to test:
-  // log in as user@example.com
-  // go to --> http://localhost:8080/urls/i3BoG/delete
-
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -505,41 +431,21 @@ app.post("/urls/:shortURL/edit", (request, response) => {
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
     response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls");
-    response.redirect("/urls");
-  }
-
-  // THIS ISN"T DOING ANYTHING!!!!!!
-  
-  if ((urlChecker(shortURL, user)) !== true) {
-    response.status(400);
-    response.send(`Oops, you don"t have access to that url`);
-    console.log("NOT YOUR URL TO EDIT");
+    response.redirect("/login");
   }
   
-  response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-  console.log("YOUR URL IS EDITED");
-  console.log(urlDatabase);
-  // return;
-
-  // console.log(editLongURL)
-  // console.log("urlDatabase[shortURL]", urlDatabase[shortURL])
+  response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
   urlDatabase[shortURL] = { longURL: editLongURL, userID: user }; // replace old longURL with the new one submitted
-  // console.log(urlDatabase)
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
 });
 
 // ----------------------------------------------------------------------------------------------------
 
 app.post("/register", (request, response) => {
-  console.log(users);
   const email = request.body.email;
-  console.log(email);
   const password = request.body.password;
   const hashedPassword = bcrypt.hashSync(password, 10);
-  console.log("HASHED PASSWORD:", hashedPassword);
-  console.log(password);
   let userID = generateRandomString();
-  console.log(userID);
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
@@ -559,43 +465,8 @@ app.post("/register", (request, response) => {
   };
 
   request.session.user_id = userID;
-  // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
-  // cookieParser.JSONCookie(userID);
-
-  console.log(users);
   response.redirect("/urls");
 });
-
-// ----------------------------------------------------------------------------------------------------
-// FUNCTION TESTS / DRIVER CODE
-// ----------------------------------------------------------------------------------------------------
-
-// generateRandomString();
-// console.log("user@example.com");
-// emailLookup("user@example.com");
-// console.log("user2@example.com");
-// emailLookup("user2@example.com");
-// console.log("sarah@example.com");
-// emailLookup("sarah@example.com");
-// console.log("SHOULD BE TRUE");
-// passwordChecker("df", "user2@example.com"); // returns true
-// console.log("SHOULD BE FALSE");
-// passwordChecker("pm", "userRandomID"); // returns false
-// console.log("SHOULD BE userRandomID");
-// getUserByEmail("user@example.com"); // should return userRandomID
-// console.log("SHOULD BE user2RandomID");
-// getUserByEmail("user2@example.com"); // should return user2RandomID
-// console.log("SHOULD BE user3RandomID");
-// getUserByEmail("sarah@example.com"); // should return user3RandomID
-// urlsForUser("aJ48lW");
-// console.log("****SHOULD BE FALSE****")
-// urlChecker("hgjklf", "aJ48lW")
-// console.log("****SHOULD BE TRUE****")
-// urlChecker("b6UTxQ", "aJ48lW")
-// console.log("****SHOULD BE TSN****")
-// getLongURL("b6UTxQ");
-
-// test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
 // ----------------------------------------------------------------------------------------------------
 // DEVELOPMENT NOTES
@@ -619,14 +490,3 @@ app.post("/register", (request, response) => {
 // The input tag has an important attribute as well: name.
 // This attribute identifies the data we are sending; in this case, it adds the key longURL to the data we"ll be sending in the body of our POST request.
 // The order of route definitions matters! The GET /urls/new route needs to be defined before the GET /urls/:id route. Routes defined earlier will take precedence, so if we place this route after the /urls/:id definition, any calls to /urls/new will be handled by app.get("/urls/:id", ...) because Express will think that new is a route parameter. A good rule of thumb to follow is that routes should be ordered from most specific to least specific.
-
-
-// ----------------------------------------------------------------------------------------------------
-// exports users and urlDatabase objects for helpers.js to require
-
-// module.exports = { // do not remove or alter
-//   users,
-//   urlDatabase
-// }
-
-// ----------------------------------------------------------------------------------------------------
