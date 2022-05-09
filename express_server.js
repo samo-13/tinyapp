@@ -11,22 +11,19 @@ app.set("view engine", "ejs"); // set ejs as the view engine
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
-// ----------------------------------------------------------------------------------------------------
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
-});
-
-// ----------------------------------------------------------------------------------------------------
-
 const cookieSession = require("cookie-session");
 app.use(cookieSession({
   name: "user_id",
   keys: ["my", "secret", "keys"],
-
   // Cookie Options
   maxAge: 24 * 60 * 60 * 1000 // 24 hours
 }));
+
+// ----------------------------------------------------------------------------------------------------
+
+app.listen(PORT, () => {
+  console.log(`TinyApp listening on port ${PORT}!`);
+});
 
 // ----------------------------------------------------------------------------------------------------
 // DATA --- keep above functions and routes
@@ -153,10 +150,10 @@ let getLongURL = function(input) {
 };
 
 // ----------------------------------------------------------------------------------------------------
-// GET
+// GET 
+// Routes HTTP GET requests to the specified path with the specified callback functions.
 // ----------------------------------------------------------------------------------------------------
 
-// Routes HTTP GET requests to the specified path with the specified callback functions.
 app.get("/", (request, response) => { // "/" refers to http://localhost:8080/
   response.send("Hello!");
 });
@@ -326,9 +323,9 @@ app.get("/access-denied", (request, response) => {
 
 // ----------------------------------------------------------------------------------------------------
 
-app.get("/urls/:id", (request, response) => { // is this the same as line 292?
-  response.redirect("/urls"); // likely need to adjust
-});
+// app.get("/urls/:id", (request, response) => { // is this the same as line 292?
+//   response.redirect("/urls"); // likely need to adjust
+// });
 
 // ----------------------------------------------------------------------------------------------------
 // POST
