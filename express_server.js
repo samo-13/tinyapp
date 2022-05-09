@@ -6,9 +6,8 @@ const bcrypt = require("bcryptjs");
 // tells the Express app to use EJS as its templating engine
 app.set("view engine", "ejs"); // set ejs as the view engine
 
-// When our browser submits a POST request, the data in the request body is sent as a Buffer. While this data type is great for transmitting data, it"s not readable for us humans. To make this data readable, we will need to install another piece of middleware, body-parser.
-// The body-parser library will convert the request body from a Buffer into string that we can read.
-// It will then add the data to the req(request) object under the key body.
+// body-parser library converts the request body from a Buffer into string that we can read
+// It will then add the data to the request object under the key body
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -65,6 +64,9 @@ const users = { // keep for testing!
 
 const { getUserByEmail } = require("./helpers");
 
+// ----------------------------------------------------------------------------------------------------
+// ADDITIONAL HELPER FUNCTIONS
+// ----------------------------------------------------------------------------------------------------
 
 let generateRandomString = function() { // random string generator
   const stringLength = 6;
@@ -74,24 +76,17 @@ let generateRandomString = function() { // random string generator
     string += Math.random().toString(36).substring(2);
     string = string.substring(0, stringLength);
   }
-  console.log(string);
   return string;
 };
 
 // ----------------------------------------------------------------------------------------------------
-// ADDITIONAL HELPER FUNCTIONS
-// ----------------------------------------------------------------------------------------------------
-// ----------------------------------------------------------------------------------------------------
 
 let emailLookup = function(email) {
-  console.log("emailLookup function");
   for (let user in users) {
     if (users[user].email === email) {
-      console.log("true");
       return true;
     }
   }
-  console.log("outside false");
   return false;
 };
 
@@ -101,11 +96,9 @@ let passwordChecker = function(password, email) {
   
   for (let user in users) {
     if ((users[user].email) && (bcrypt.compareSync(password, users[user].hashedPassword))) {
-      console.log("true");
       return true;
     }
   }
-  console.log("false");
   return false;
 };
 
@@ -120,7 +113,6 @@ let urlsForUser = function(id) {
       userUrls[shortURL] = userUrlObject;
     }
   }
-  console.log("TEST 2:", userUrls);
   return userUrls;
 };
 
@@ -129,11 +121,9 @@ let urlsForUser = function(id) {
 let urlChecker = function(shortUrlInput, user) {
   for (let shortURL in urlDatabase) {
     if ((shortURL === shortUrlInput) && (urlDatabase[shortURL].userID === user)) {
-      console.log("true");
       return true;
     }
   }
-  console.log("false");
   return false;
 };
 
@@ -141,10 +131,8 @@ let urlChecker = function(shortUrlInput, user) {
 
 let checkShortURL = function(input) {
   let result = '';
+  
   for (let shortURL in urlDatabase) {
-    console.log('INPUT:', input);
-    console.log('SHORTURL:', shortURL);
-
     if (shortURL === input) {
       result = 'true';
     } else {
@@ -153,23 +141,16 @@ let checkShortURL = function(input) {
   } return result;
 };
 
-console.log(checkShortURL('b6UTxQ'));
-console.log(checkShortURL('hgjkn'));
-
 let getLongURL = function(input) {
   let longURL = "";
+
   for (let shortURL in urlDatabase) {
-    console.log("getLongURL FUNCTION:");
     if (input === shortURL) {
       longURL = urlDatabase[shortURL].longURL;
-      console.log("LONGURL:", longURL);
       return longURL;
     }
   }
 };
-
-console.log("****SHOULD BE TSN****");
-getLongURL("b6UTxQ");
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -226,7 +207,6 @@ app.get("/login", (request, response) => {
 
 app.get("/register", (request, response) => {
   const user = request.session.user_id; // gets the cookie value or {} if none https://expressjs.com/en/api.html
-  console.log(user);
 
   if (user !== undefined) {
     response.redirect("/urls");
