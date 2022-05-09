@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const PORT = 8080; // default port 8080
+const bcrypt = require("bcryptjs");
 
 // tells the Express app to use EJS as its templating engine
 app.set("view engine", "ejs"); // set ejs as the view engine
@@ -44,17 +45,22 @@ const users = {
   "bsghjr": {
     id: "bsghjr",
     email: "user@example.com",
-    password: "pmd"
+    hashedPassword: "pmd"
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "df"
+    hashedPassword: "df"
   },
   "aJ48lW": {
     id: "aJ48lW",
     email: "sarah@example.com",
-    password: "dog"
+    hashedPassword: "dog"
+  },
+  "7yyet6": {
+  id: "7yyet6",
+  email: "potato@gmail.com",
+  hashedPassword: "$2a$10$9IHbBuRy2dWpV6SP3H5fHudhlC.fsWRCefw52FIAO.viemmLIt9UG"
   }
 };
 
@@ -111,7 +117,7 @@ let passwordCheckerV2 = function(password, email) {
   console.log("passwordCheckerV2 function");
   
   for (let user in users) {
-    if ((emailLookup(email)) && (users[user].password === password)) {
+    if ((users[user].email) && (bcrypt.compareSync(password, users[user].hashedPassword))) {
       console.log("true");
       return true;
     }
@@ -169,31 +175,31 @@ let urlsForUser = function(id) {
 
     if (urlDatabase[shortURL].userID === id) {
 
-      // console.log('TEST 1:', urlDatabase[shortURL])
+      // console.log("TEST 1:", urlDatabase[shortURL])
       let userUrlObject = urlDatabase[shortURL]
       userUrls[shortURL] = userUrlObject
     }
   }
-  console.log('TEST 2:', userUrls)
+  console.log("TEST 2:", userUrls)
   return userUrls
 };
 
-urlsForUser('aJ48lW');
+urlsForUser("aJ48lW");
 
 let urlChecker = function(shortUrlInput, user) {
   for (let shortURL in urlDatabase) {
     if ((shortURL === shortUrlInput) && (urlDatabase[shortURL].userID === user) ) {
-      console.log('true')
+      console.log("true")
       return true;
     }
   }
-  console.log('false')
+  console.log("false")
   return false;
 }
 
-console.log('****SHOULD BE FALSE****')
+console.log("****SHOULD BE FALSE****")
 urlChecker("hgjklf", "aJ48lW")
-console.log('****SHOULD BE TRUE****')
+console.log("****SHOULD BE TRUE****")
 urlChecker("b6UTxQ", "aJ48lW")
 
 // ----------------------------------------------------------------------------------------------------
@@ -216,9 +222,9 @@ app.get("/urls", (request, response) => {
   
   let user = request.cookies["user_id"];
   let urls = urlsForUser(user)
-  console.log('TESTING USER:', user);
+  console.log("TESTING USER:", user);
   user = users[user];
-  console.log('TESTING USER:', user);
+  console.log("TESTING USER:", user);
   // let user = users[userID];
   console.log(user);
   // console.log(id);
@@ -259,7 +265,6 @@ app.get("/login", (request, response) => {
 });
 
 app.get("/register", (request, response) => {
-  // let userID = request.cookies["user_id"];
   // let user = users[userID];
   // // let email = users[userID].email
   // console.log("USER:", user);
@@ -330,11 +335,11 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   let user = users[userID];
   const shortURL = request.params.shortURL;
   let checkURL = urlChecker(shortURL, userID)
-  console.log('USER', user)
-  console.log('USERID', userID)
-  console.log('SHORTURL:', shortURL)
+  console.log("USER", user)
+  console.log("USERID", userID)
+  console.log("SHORTURL:", shortURL)
   console.log(urlDatabase);
-  console.log('CHECKURL:', checkURL)
+  console.log("CHECKURL:", checkURL)
 
 
   templateVars = {
@@ -399,6 +404,7 @@ app.post("/login", (request, response) => {
   let email = request.body.email;
   console.log(email);
   let password = request.body.password;
+  let hashedPassword = bcrypt.hashSync(password, 10);
   console.log(password);
   let userID = getUserIDFromEmail(email);
   console.log(userID);
@@ -434,7 +440,7 @@ app.post("/urls", (request, response) => {
 
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
-    response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
+    response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls")
     return;
   }
 
@@ -456,22 +462,22 @@ app.post("/urls/:shortURL/delete", (request, response) => {
   
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
-    response.send('Oops, you must be registered and logged in with TinyApp to add, edit, and delete urls')
+    response.send("Oops, you must be registered and logged in with TinyApp to add, edit, and delete urls")
     response.redirect("/urls"); 
     return;
   }
 
-  // THIS ISN'T DOING ANYTHING!!!!!!
+  // THIS ISN"T DOING ANYTHING!!!!!!
   if ((urlChecker(shortURL, user)) !== true){
     response.status(400);
-    response.send(`Oops, you don't have access to that url`)
-    console.log('NOT YOUR URL TO DELETE')
+    response.send(`Oops, you don"t have access to that url`)
+    console.log("NOT YOUR URL TO DELETE")
     response.redirect("/access-denied");
   }
 
   delete urlDatabase[shortURL]; // delete the specific url from the urlDatabase object
   response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-  console.log('YOUR URL IS DELETED')
+  console.log("YOUR URL IS DELETED")
   console.log(urlDatabase);
   // return;
   
@@ -489,20 +495,20 @@ app.post("/urls/:shortURL/edit", (request, response) => {
 
   if (user === undefined) { // send error and message to non users trying to add a new URL
     response.status(400);
-    response.send('Oops, you must be registered and logged in with TinyApp to add and edit urls')
+    response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls")
     response.redirect("/urls"); 
   }
 
-  // THIS ISN'T DOING ANYTHING!!!!!!
+  // THIS ISN"T DOING ANYTHING!!!!!!
   
   if ((urlChecker(shortURL, user)) !== true){
     response.status(400);      
-    response.send(`Oops, you don't have access to that url`)
-    console.log('NOT YOUR URL TO EDIT')
+    response.send(`Oops, you don"t have access to that url`)
+    console.log("NOT YOUR URL TO EDIT")
   };
   
     response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
-    console.log('YOUR URL IS EDITED')
+    console.log("YOUR URL IS EDITED")
     console.log(urlDatabase);
     // return;
 
@@ -516,9 +522,11 @@ app.post("/urls/:shortURL/edit", (request, response) => {
 
 app.post("/register", (request, response) => {
   console.log(users);
-  let email = request.body.email;
+  const email = request.body.email;
   console.log(email);
-  let password = request.body.password;
+  const password = request.body.password;
+  const hashedPassword = bcrypt.hashSync(password, 10);
+  console.log("HASHED PASSWORD:", hashedPassword);
   console.log(password);
   let userID = generateRandomString();
   console.log(userID);
@@ -530,14 +538,14 @@ app.post("/register", (request, response) => {
 
   if (emailLookup(email)) { // if email exists
     response.status(403);
-    response.send(`Oops, that email does not exist!`);
+    response.send(`Oops, that email already exists!`);
     return; // needed to stop the user from being added again
   }
 
   users[userID] = {
     id: userID,
     email,
-    password
+    hashedPassword
   };
 
   response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
