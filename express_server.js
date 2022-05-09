@@ -67,7 +67,6 @@ const users = { // keep for testing!
   }
 };
 
-
 // ----------------------------------------------------------------------------------------------------
 // REQUIRE FUNCTIONS FROM HELPERS.JS
 // ----------------------------------------------------------------------------------------------------
@@ -348,9 +347,24 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   console.log(urlDatabase);
   console.log("CHECKURL:", checkURL);
 
-  // const templateVars = {
-  //   user
-  // };
+  if (checkURL) {
+    response.redirect("/urls");
+  }
+
+  response.redirect("/access-denied");
+});
+
+// ----------------------------------------------------------------------------------------------------
+
+app.get("/urls/:shortURL/edit", (request, response) => {
+  let userID = request.session["user_id"];
+  let shortURL = request.params.shortURL;
+  let checkURL = urlChecker(shortURL, userID);
+
+  console.log("USERID", userID);
+  console.log("SHORTURL:", shortURL);
+  console.log(urlDatabase);
+  console.log("CHECKURL:", checkURL);
 
   if (checkURL) {
     response.redirect("/urls");
