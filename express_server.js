@@ -146,8 +146,8 @@ console.log("SHOULD BE FALSE");
 passwordCheckerV2("pm", "userRandomID"); // returns false
 
 
-let getUsersByEmail = function(email, users) {
-  console.log("getUsersByEmail");
+let getUserByEmail = function(email, users) {
+  console.log("getUserByEmail");
 
   for (let user in users) {
     if (email === users[user].email) { // was unable to get emailChecker function to work here
@@ -159,11 +159,11 @@ let getUsersByEmail = function(email, users) {
 };
 
 console.log("SHOULD BE userRandomID");
-getUsersByEmail("user@example.com"); // should return userRandomID
+getUserByEmail("user@example.com"); // should return userRandomID
 console.log("SHOULD BE user2RandomID");
-getUsersByEmail("user2@example.com"); // should return user2RandomID
+getUserByEmail("user2@example.com"); // should return user2RandomID
 console.log("SHOULD BE user3RandomID");
-getUsersByEmail("sarah@example.com"); // should return user3RandomID
+getUserByEmail("sarah@example.com"); // should return user3RandomID
 
 // let getUserIDFromCookie = function() {
 //
@@ -432,7 +432,7 @@ app.post("/login", (request, response) => {
   let password = request.body.password;
   let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn't being read ******
   console.log(password);
-  let userID = getUsersByEmail(email, users);
+  let userID = getUserByEmail(email, users);
   console.log(userID);
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
