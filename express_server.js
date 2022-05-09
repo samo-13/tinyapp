@@ -493,7 +493,6 @@ app.post("/urls/:shortURL/edit", (request, response) => {
     response.status(400);
     response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls")
     response.redirect("/urls"); 
-    return;
   }
 
   // THIS ISN"T DOING ANYTHING!!!!!!
@@ -502,7 +501,6 @@ app.post("/urls/:shortURL/edit", (request, response) => {
     response.status(400);      
     response.send(`Oops, you don"t have access to that url`)
     console.log("NOT YOUR URL TO EDIT")
-    return;
   };
   
     response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
@@ -515,7 +513,6 @@ app.post("/urls/:shortURL/edit", (request, response) => {
   urlDatabase[shortURL] = { longURL: editLongURL, userID: user }; // replace old longURL with the new one submitted
   // console.log(urlDatabase)
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
-  return
 });
 
 // ----------------------------------------------------------------------------------------------------
