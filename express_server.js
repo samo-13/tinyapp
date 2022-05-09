@@ -17,6 +17,13 @@ const request = require("request");
 const { response } = require("express");
 // app.use(cookieParser());
 
+// ----------------------------------------------------------------------------------------------------
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}!`);
+});
+
+// ----------------------------------------------------------------------------------------------------
 
 const cookieSession = require("cookie-session")
 app.use(cookieSession({
@@ -28,13 +35,7 @@ app.use(cookieSession({
 }))
 
 // ----------------------------------------------------------------------------------------------------
-// REQUIRE FUNCTIONS FROM HELPERS.JS
-// ----------------------------------------------------------------------------------------------------
-
-const { getUserByEmail } = require("./helpers")
-
-// ----------------------------------------------------------------------------------------------------
-// DATA
+// DATA --- keep above functions and routes
 // ----------------------------------------------------------------------------------------------------
 
 // const urlDatabase = {
@@ -70,11 +71,17 @@ const users = { // keep for testing!
   }
 };
 
+
 // ----------------------------------------------------------------------------------------------------
-// FUNCTIONS
+// REQUIRE FUNCTIONS FROM HELPERS.JS
 // ----------------------------------------------------------------------------------------------------
 
-let generateRandomString = function() { // random string generator
+const { 
+  getUserByEmail
+ } = require("./helpers")
+
+
+ let generateRandomString = function() { // random string generator
   const stringLength = 6;
   let string = "";
 
@@ -88,6 +95,8 @@ let generateRandomString = function() { // random string generator
 
 // generateRandomString();
 
+// ----------------------------------------------------------------------------------------------------
+
 let emailLookup = function(email) {
   console.log("emailLookup function");
   for (let user in users) {
@@ -100,26 +109,9 @@ let emailLookup = function(email) {
   return false;
 };
 
-console.log("user@example.com");
-emailLookup("user@example.com");
-console.log("user2@example.com");
-emailLookup("user2@example.com");
-console.log("sarah@example.com");
-emailLookup("sarah@example.com");
+// ----------------------------------------------------------------------------------------------------
 
-// let passwordChecker = function(password, user) {
-//   console.log("passwordChecker function");
-//   for (let user in users) {
-//     if (users[user].password === password) {
-//       console.log("true");
-//       return true;
-//     }
-//   }
-//   console.log("false");
-//   return false;
-// };
-
-let passwordCheckerV2 = function(password, email) {
+let passwordChecker = function(password, email) {
   console.log("passwordCheckerV2 function");
   
   for (let user in users) {
@@ -132,57 +124,13 @@ let passwordCheckerV2 = function(password, email) {
   return false;
 };
 
-// console.log("SHOULD BE TRUE");
-// passwordChecker("pmd", "userRandomID"); // returns true
-// console.log("SHOULD BE FALSE");
-// passwordChecker("pm", "userRandomID"); // returns false
-console.log("SHOULD BE TRUE");
-passwordCheckerV2("df", "user2@example.com"); // returns true
-console.log("SHOULD BE FALSE");
-passwordCheckerV2("pm", "userRandomID"); // returns false
-
-
-// let getUserByEmail = function(email, users) {
-//   console.log("getUserByEmail");
-
-//   for (let user in users) {
-//     if (email === users[user].email) { // was unable to get emailChecker function to work here
-//       console.log(users[user].id);
-//       user = users[user].id
-//       return user
-//     }
-//   } return false
-// };
-
-console.log("SHOULD BE userRandomID");
-getUserByEmail("user@example.com"); // should return userRandomID
-console.log("SHOULD BE user2RandomID");
-getUserByEmail("user2@example.com"); // should return user2RandomID
-console.log("SHOULD BE user3RandomID");
-getUserByEmail("sarah@example.com"); // should return user3RandomID
-
-// let getUserIDFromCookie = function() {
-//
-// };
-
-// let getEmailFromUserID = function(user) {
-// 
-// };
-
-// let getShortURLS = function() {
-//   for (let shortURL in urlDatabase) {
-//     console.log(shortURL);
-//   }
-// };
+// ----------------------------------------------------------------------------------------------------
 
 let urlsForUser = function(id) {
   let userUrls = {};
 
   for (let shortURL in urlDatabase) {
-
     if (urlDatabase[shortURL].userID === id) {
-
-      // console.log("TEST 1:", urlDatabase[shortURL])
       let userUrlObject = urlDatabase[shortURL]
       userUrls[shortURL] = userUrlObject
     }
@@ -191,7 +139,7 @@ let urlsForUser = function(id) {
   return userUrls
 };
 
-urlsForUser("aJ48lW");
+// ----------------------------------------------------------------------------------------------------
 
 let urlChecker = function(shortUrlInput, user) {
   for (let shortURL in urlDatabase) {
@@ -204,26 +152,19 @@ let urlChecker = function(shortUrlInput, user) {
   return false;
 }
 
-console.log("****SHOULD BE FALSE****")
-urlChecker("hgjklf", "aJ48lW")
-console.log("****SHOULD BE TRUE****")
-urlChecker("b6UTxQ", "aJ48lW")
+// ----------------------------------------------------------------------------------------------------
 
 let getLongURL = function(shortURL){
   let longURL = ""
-
-  for (let shortURL in urlDatabase) {
+  for (let shortURLx in urlDatabase) {
     console.log("getLongURL FUNCTION:")
-    if ((shortURL === shortURL)) {
-      longURL = urlDatabase[shortURL].longURL
+    if (shortURLx === shortURL) {
+      longURL = urlDatabase[shortURLx].longURL
       console.log("LONGURL:", longURL);
       return longURL
     }
   }
 }
-
-console.log("****SHOULD BE TSN****")
-getLongURL("b6UTxQ");
 
 // ----------------------------------------------------------------------------------------------------
 // GET
@@ -235,9 +176,13 @@ app.get("/", (request, response) => { // "/" refers to http://localhost:8080/
   response.send("Hello!");
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.get("/urls.json", (request, response) => {
   response.json(urlDatabase[shortURL]);
 });
+
+// ----------------------------------------------------------------------------------------------------
 
 // When sending variables to an EJS template, we need to send them inside an object, even if we are only sending one variable.
 // This is so we can use the key of that variable (in the above case the key is urls) to access the data within our template.
@@ -264,6 +209,8 @@ app.get("/urls", (request, response) => {
   response.render("urls_index", templateVars);
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.get("/login", (request, response) => {
   // let userID = request.cookies["user_id"]
   // let user = users[userID]
@@ -287,6 +234,8 @@ app.get("/login", (request, response) => {
   response.render("urls_login", templateVars);
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.get("/register", (request, response) => {
   // let user = users[userID];
   // // let email = users[userID].email
@@ -308,6 +257,8 @@ app.get("/register", (request, response) => {
   response.render("urls_register", templateVars);
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 // keep above /urls/:id route definition
 app.get("/urls/new", (request, response) => {
 
@@ -325,6 +276,8 @@ app.get("/urls/new", (request, response) => {
 
   response.render("urls_new", templateVars);
 });
+
+// ----------------------------------------------------------------------------------------------------
 
 app.get("/urls/:shortURL", (request, response) => { // The : in front of shortURL indicates that shortURL is a route parameter
   
@@ -344,6 +297,8 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   response.render("urls_show", templateVars);
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.get("/u/:shortURL", (request, response) => {
   let shortURL = request.params.shortURL;
   shortURL = urlDatabase[shortURL];
@@ -352,6 +307,7 @@ app.get("/u/:shortURL", (request, response) => {
   response.redirect(longURL);
 });
 
+// ----------------------------------------------------------------------------------------------------
 
 app.get("/urls/:shortURL/delete", (request, response) => {
   let userID = request.session["user_id"];
@@ -375,6 +331,8 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   response.redirect("/access-denied")
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.get("/access-denied", (request, response) => {
   let userID = request.session["user_id"];
   let user = users[userID];
@@ -388,33 +346,10 @@ app.get("/access-denied", (request, response) => {
   // response.redirect("/urls")
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.get("/urls/:id", (request, response) => { // is this the same as line 292?
   response.redirect("/urls") // likely need to adjust
-});
-
-// ----------------------------------------------------------------------------------------------------
-// example route handlers
-
-// app.get("/hello", (request, response) => {
-//   response.send("<html><body>Hello <b>World</b></body></html>\n");
-// });
-
-app.get("/helloworld", (request, response) => {
-  const templateVars = { greeting: "Hello World!" };
-  response.render("hello_world", templateVars);
-});
-
-// the templateVars object above contains the string "Hello World" under the key greeting.
-// We then pass the templateVars object to the template called hello_world.
-
-// In our hello_world.ejs file, we can display the "Hello World!" string stored in the templateVars object by calling the key greeting:
-
-// <!-- This would display the string "Hello World!" -->
-// <h1><%= greeting %></h1>
-// ----------------------------------------------------------------------------------------------------
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}!`);
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -426,7 +361,7 @@ app.post("/login", (request, response) => {
   let email = request.body.email;
   console.log(email);
   let password = request.body.password;
-  let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn"t being read ******
+  // let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn"t being read ******
   console.log(password);
   let userID = getUserByEmail(email, users);
   console.log(userID);
@@ -436,7 +371,7 @@ app.post("/login", (request, response) => {
     response.send(`Oops, form fields can"t be left blank!`);
   }
 
-  if (passwordCheckerV2(password, email)) { // if email exists & password matches
+  if (passwordChecker(password, email)) { // if email exists & password matches
     
     request.session.user_id = userID;
     // response.cookie("user_id", userID); // http://expressjs.com/en/api.html#res.cookie
@@ -452,12 +387,16 @@ app.post("/login", (request, response) => {
   response.redirect("/urls");
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.post("/logout", (request, response) => {
   console.log(request.session["user_id"]);
   // response.clearCookie("user_id", {domain: "localhost", path:"/"});  // https://expressjs.com/en/api.html res.clearCookie
   request.session = null; // clear cookie 
   response.redirect("/login");
 });
+
+// ----------------------------------------------------------------------------------------------------
 
 app.post("/urls", (request, response) => {
   let user = request.session.user_id
@@ -478,6 +417,8 @@ app.post("/urls", (request, response) => {
     response.redirect(`/urls/${shortURL}`); // generates a random 6 character string
     return;
 });
+
+// ----------------------------------------------------------------------------------------------------
 
 app.post("/urls/:shortURL/delete", (request, response) => {
 
@@ -511,6 +452,8 @@ app.post("/urls/:shortURL/delete", (request, response) => {
 
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 app.post("/urls/:shortURL/edit", (request, response) => {
 
   let user = request.session["user_id"];
@@ -543,6 +486,7 @@ app.post("/urls/:shortURL/edit", (request, response) => {
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
 });
 
+// ----------------------------------------------------------------------------------------------------
 
 app.post("/register", (request, response) => {
   console.log(users);
@@ -579,9 +523,42 @@ app.post("/register", (request, response) => {
   console.log(users);
   response.redirect("/urls");
 });
+
+// ----------------------------------------------------------------------------------------------------
+// FUNCTION TESTS / DRIVER CODE
+// ----------------------------------------------------------------------------------------------------
+
+generateRandomString();
+console.log("user@example.com");
+emailLookup("user@example.com");
+console.log("user2@example.com");
+emailLookup("user2@example.com");
+console.log("sarah@example.com");
+emailLookup("sarah@example.com");
+console.log("SHOULD BE TRUE");
+passwordChecker("df", "user2@example.com"); // returns true
+console.log("SHOULD BE FALSE");
+passwordChecker("pm", "userRandomID"); // returns false
+console.log("SHOULD BE userRandomID");
+getUserByEmail("user@example.com"); // should return userRandomID
+console.log("SHOULD BE user2RandomID");
+getUserByEmail("user2@example.com"); // should return user2RandomID
+console.log("SHOULD BE user3RandomID");
+getUserByEmail("sarah@example.com"); // should return user3RandomID
+urlsForUser("aJ48lW");
+console.log("****SHOULD BE FALSE****")
+urlChecker("hgjklf", "aJ48lW")
+console.log("****SHOULD BE TRUE****")
+urlChecker("b6UTxQ", "aJ48lW")
+console.log("****SHOULD BE TSN****")
+getLongURL("b6UTxQ");
+
 // test using curl -X POST "http://localhost:8080/urls/9sm5xK/delete"
 
-// development notes
+// ----------------------------------------------------------------------------------------------------
+// DEVELOPMENT NOTES
+// ----------------------------------------------------------------------------------------------------
+
 // https://expressjs.com/en/4x/api.html#app.METHOD
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
 
@@ -600,3 +577,14 @@ app.post("/register", (request, response) => {
 // The input tag has an important attribute as well: name.
 // This attribute identifies the data we are sending; in this case, it adds the key longURL to the data we"ll be sending in the body of our POST request.
 // The order of route definitions matters! The GET /urls/new route needs to be defined before the GET /urls/:id route. Routes defined earlier will take precedence, so if we place this route after the /urls/:id definition, any calls to /urls/new will be handled by app.get("/urls/:id", ...) because Express will think that new is a route parameter. A good rule of thumb to follow is that routes should be ordered from most specific to least specific.
+
+
+// ----------------------------------------------------------------------------------------------------
+// exports users and urlDatabase objects for helpers.js to require
+
+// module.exports = { // do not remove or alter
+//   users,
+//   urlDatabase
+// } 
+
+// ----------------------------------------------------------------------------------------------------
