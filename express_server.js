@@ -156,10 +156,10 @@ let urlChecker = function(shortUrlInput, user) {
 
 let getLongURL = function(shortURL){
   let longURL = ""
-  for (let shortURLx in urlDatabase) {
+  for (let shortURL in urlDatabase) {
     console.log("getLongURL FUNCTION:")
-    if (shortURLx === shortURL) {
-      longURL = urlDatabase[shortURLx].longURL
+    if (shortURL === shortURL) {
+      longURL = urlDatabase[shortURL].longURL
       console.log("LONGURL:", longURL);
       return longURL
     }
@@ -359,12 +359,12 @@ app.get("/urls/:id", (request, response) => { // is this the same as line 292?
 app.post("/login", (request, response) => {
 
   let email = request.body.email;
-  console.log(email);
+  // console.log(email);
   let password = request.body.password;
   // let hashedPassword = bcrypt.hashSync(password, 10); // hashed password isn"t being read ******
-  console.log(password);
+  // console.log(password);
   let userID = getUserByEmail(email, users);
-  console.log(userID);
+  // console.log(userID);
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
