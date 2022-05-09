@@ -60,7 +60,7 @@ const users = { // keep for testing!
 };
 
 // ----------------------------------------------------------------------------------------------------
-// REQUIRE FUNCTION FROM HELPERS.JS 
+// REQUIRE FUNCTION FROM HELPERS.JS
 // ----------------------------------------------------------------------------------------------------
 
 const { getUserByEmail } = require("./helpers");
@@ -300,7 +300,6 @@ app.get("/u/:shortURL", (request, response) => {
 
 app.get("/urls/:shortURL/delete", (request, response) => {
   let userID = request.session["user_id"];
-  let user = users[userID];
   const shortURL = request.params.shortURL;
   let checkURL = urlChecker(shortURL, userID);
 
@@ -311,9 +310,9 @@ app.get("/urls/:shortURL/delete", (request, response) => {
   response.redirect("/access-denied");
 });
 
-  // to test:
-  // log in as user@example.com
-  // go to --> http://localhost:8080/urls/i3BoG/delete
+// to test:
+// log in as user@example.com
+// go to --> http://localhost:8080/urls/i3BoG/delete
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/urls/:shortURL/edit", (request, response) => {
@@ -328,9 +327,9 @@ app.get("/urls/:shortURL/edit", (request, response) => {
   response.redirect("/access-denied");
 });
 
-  // to test:
-  // log in as user@example.com
-  // go to --> http://localhost:8080/urls/i3BoG/edit
+// to test:
+// log in as user@example.com
+// go to --> http://localhost:8080/urls/i3BoG/edit
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -467,26 +466,3 @@ app.post("/register", (request, response) => {
   request.session.user_id = userID;
   response.redirect("/urls");
 });
-
-// ----------------------------------------------------------------------------------------------------
-// DEVELOPMENT NOTES
-// ----------------------------------------------------------------------------------------------------
-
-// https://expressjs.com/en/4x/api.html#app.METHOD
-// https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
-
-// HTTP Method	/ CRUD Action
-// --- GET	/ Read
-// --- POST / Create
-// --- PUT	/ Update
-// --- DELETE / Delete
-
-// limitations of HTTP in the browser
-// --- To create PUT and DELETE requests we would need to use a workaround known as HTTP Method Override, but for simplicity we will make do with just GET and POST. Instead of PUT and DELETE, we will use POST.
-
-// urls_new
-// The form tag has two important attributes: action and method.
-// The action attribute tells the form which URL to submit to while the method attribute tells the form which HTTP method to use when submitting the form.
-// The input tag has an important attribute as well: name.
-// This attribute identifies the data we are sending; in this case, it adds the key longURL to the data we"ll be sending in the body of our POST request.
-// The order of route definitions matters! The GET /urls/new route needs to be defined before the GET /urls/:id route. Routes defined earlier will take precedence, so if we place this route after the /urls/:id definition, any calls to /urls/new will be handled by app.get("/urls/:id", ...) because Express will think that new is a route parameter. A good rule of thumb to follow is that routes should be ordered from most specific to least specific.
