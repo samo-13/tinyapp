@@ -51,11 +51,7 @@ const urlDatabase = {
     i3BoGr: {
         longURL: "https://www.google.ca",
         userID: "aJ48lW"
-    },
-    hgjklf: {
-      longURL: "https://www.banana.ca",
-      userID: "bsghjr" // for testing different user id
-  }
+    }
 };
 
 const users = { // keep for testing!
@@ -155,14 +151,21 @@ let urlChecker = function(shortUrlInput, user) {
 // ----------------------------------------------------------------------------------------------------
 
 let checkShortURL = function(input){
+  let result = ''
   for (let shortURL in urlDatabase) {
-    if (input === shortURL) {
-      return true
+    console.log('INPUT:', input)
+    console.log('SHORTURL:', shortURL)
+
+    if (shortURL === input) {
+      result = 'true';
     } else {
-      return false;
+      result = 'false';
     }
-  }
+  } return result;
 }
+
+console.log(checkShortURL('b6UTxQ'))
+console.log(checkShortURL('hgjkn'))
 
 let getLongURL = function(input){
   let longURL = ""
@@ -172,8 +175,6 @@ let getLongURL = function(input){
       longURL = urlDatabase[shortURL].longURL
       console.log("LONGURL:", longURL);
       return longURL
-    } else {
-      return false;
     }
   }
 }
@@ -310,22 +311,29 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
 
   response.render("urls_show", templateVars);
+  return;
 });
+
+console.log(urlDatabase);
 
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/u/:shortURL", (request, response) => {
   let shortURL = request.params.shortURL;
+  console.log('***SHORTURL:***', shortURL)
   // shortURL = urlDatabase[shortURL];
   if (checkShortURL(shortURL)) {
     let longURL = getLongURL(shortURL)
     response.redirect(longURL);
+    return;
   }
   
   if (checkShortURL(shortURL) === false) {
     response.status(400);
     response.send(`Oops, no URL matches in our database!`);
+    return;
   }
+
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -485,6 +493,7 @@ app.post("/urls/:shortURL/edit", (request, response) => {
     response.status(400);
     response.send("Oops, you must be registered and logged in with TinyApp to add and edit urls")
     response.redirect("/urls"); 
+    return;
   }
 
   // THIS ISN"T DOING ANYTHING!!!!!!
@@ -493,6 +502,7 @@ app.post("/urls/:shortURL/edit", (request, response) => {
     response.status(400);      
     response.send(`Oops, you don"t have access to that url`)
     console.log("NOT YOUR URL TO EDIT")
+    return;
   };
   
     response.redirect("/urls"); // once the resource has been deleted, redirect back to /urls
@@ -505,6 +515,7 @@ app.post("/urls/:shortURL/edit", (request, response) => {
   urlDatabase[shortURL] = { longURL: editLongURL, userID: user }; // replace old longURL with the new one submitted
   // console.log(urlDatabase)
   response.redirect("/urls"); // once the resource has been edited, redirect back to /urls
+  return
 });
 
 // ----------------------------------------------------------------------------------------------------
