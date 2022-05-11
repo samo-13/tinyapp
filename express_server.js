@@ -155,7 +155,7 @@ let getLongURL = function(input) {
 // ----------------------------------------------------------------------------------------------------
 
 app.get("/", (request, response) => { // "/" refers to http://localhost:8080/
-  response.send("Hello!");
+  response.redirect("/urls")
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -243,6 +243,7 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
   let shortURL = request.params.shortURL; // https://docs.microsoft.com/en-us/dotnet/api/system.web.httprequest.params?redirectedfrom=MSDN&view=netframework-4.8#System_Web_HttpRequest_Params
   let userID = request.session["user_id"];
   let user = users[userID];
+  let checkURL = urlChecker(shortURL, userID);
 
   const templateVars = {
     shortURL: shortURL,
@@ -250,8 +251,12 @@ app.get("/urls/:shortURL", (request, response) => { // The : in front of shortUR
     user,
   }; // https://expressjs.com/en/guide/routing.html#route-parameters
 
-  response.render("urls_show", templateVars);
-  return;
+  if (checkURL) {
+    response.render("urls_show", templateVars);
+    return;
+  } else {
+    response.redirect("/access-denied");
+  }
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -339,19 +344,18 @@ app.post("/login", (request, response) => {
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
-    response.send(`Oops, form fields can"t be left blank!`);
+    response.send(`Oops, form fields can't be left blank!`);
   }
 
-  if (passwordChecker(password, email)) { // if email exists & password matches
+  if (passwordChecker(password, email)) { // if email exists & password matches log user in
     request.session.user_id = userID;
+    response.redirect("/urls");
   } else {
     response.status(403);
     response.send(`Oops, the email or passward was incorrect!`);
     return; // stop the user from being added again
   }
-  
-  request.session.user_id = userID;
-  response.redirect("/urls");
+  console.log(users);
 });
 
 // ----------------------------------------------------------------------------------------------------
@@ -425,7 +429,7 @@ app.post("/register", (request, response) => {
 
   if (email === "" || password === "") { // if email or password field are left empty return an error
     response.status(400);
-    response.send(`Oops, form fields can"t be left blank!`);
+    response.send(`Oops, form fields can't be left blank!`);
   }
 
   if (emailLookup(email)) { // if email exists
@@ -434,12 +438,16 @@ app.post("/register", (request, response) => {
     return; // needed to stop the user from being added again
   }
 
-  users[userID] = {
-    id: userID,
-    email,
-    hashedPassword
-  };
+  if ((email !== "") && (password !== "")) { // make sure password and email fields are populated
 
-  request.session.user_id = userID;
-  response.redirect("/urls");
+    users[userID] = {
+      id: userID,
+      email,
+      hashedPassword
+    }
+
+    request.session.user_id = userID;
+    response.redirect("/urls");
+};
+console.log(users);
 });

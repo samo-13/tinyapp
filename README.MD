@@ -36,26 +36,14 @@ This was created as an assignment for the Lighthouse Labs Web Development Bootca
 
 ## User Testing Tips
 - Placeholder users are available to help with testing
-<<<<<<< HEAD
 ### 1. **Potato**
-=======
-1. **Potato**
->>>>>>> c179dfb6e6c8b7af430827377fd69bd9c4675d70
   - **email:** potato@gmail.com 
   - **password:** 123 
   - **LongUrl:** https://www.tsn.ca 
   - **ShortUrl:** b6UTxQ
 
-<<<<<<< HEAD
 ### 2. **Banana**
   - **email:** banana@gmail.com 
   - **password:** 123 
   - **LongUrl:** https://www.google.ca 
   - **ShortUrl:** i3BoGr
-=======
-2. **Banana**
-  - **email:** banana@gmail.com 
-  - **password:** 123 
-  - **LongUrl:** https://www.google.ca 
-  - **ShortUrl:** i3BoGr
->>>>>>> c179dfb6e6c8b7af430827377fd69bd9c4675d70
