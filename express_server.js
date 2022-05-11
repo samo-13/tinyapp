@@ -36,7 +36,11 @@ const urlDatabase = {
   },
   i3BoGr: {
     longURL: "https://www.google.ca",
-    userID: "aJ48lW"
+    userID: "i78m8z"
+  },
+  i4afgk: {
+    longURL: "https://www.nhl.ca",
+    userID: "i78m8z"
   }
 };
 
@@ -350,6 +354,7 @@ app.post("/login", (request, response) => {
   if (passwordChecker(password, email)) { // if email exists & password matches log user in
     request.session.user_id = userID;
     response.redirect("/urls");
+    
   } else {
     response.status(403);
     response.send(`Oops, the email or passward was incorrect!`);
